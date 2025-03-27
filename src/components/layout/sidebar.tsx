@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { SidebarNav } from './sidebar-nav';
 import { ConversationList } from '@/components/chat/conversation-list';
@@ -20,7 +20,20 @@ export function Sidebar({
   onNewChatClick,
   onSettingsClick
 }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // 从本地存储中获取折叠状态
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebar-collapsed');
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  // 状态变化时保存到本地存储
+  useEffect(() => {
+    localStorage.setItem('sidebar-collapsed', JSON.stringify(isCollapsed));
+  }, [isCollapsed]);
+
+  const toggleCollapsed = () => {
+    setIsCollapsed((prev: boolean) => !prev);
+  };
 
   return (
     <div className={cn(
@@ -32,8 +45,8 @@ export function Sidebar({
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-3 top-[50%] transform -translate-y-1/2 h-6 w-6 rounded-full border border-blue-100 bg-white shadow-sm text-blue-500 hover:text-blue-700 hover:bg-blue-50 z-20"
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="absolute -right-3 top-[50%] transform -translate-y-1/2 h-6 w-6 rounded-full border border-blue-100 bg-white shadow-sm text-blue-500 hover:text-blue-700 hover:bg-blue-50 z-20 transition-colors duration-200"
+        onClick={toggleCollapsed}
         title={isCollapsed ? "展开侧边栏" : "收起侧边栏"}
       >
         {isCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
