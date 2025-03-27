@@ -54,8 +54,8 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
   return (
     <div 
       className={cn(
-        "p-4 border-t bg-background sticky bottom-0 z-10 transition-all duration-300",
-        isFocused ? "bg-blue-50/30 shadow-md" : "",
+        "p-4 border-t border-t-gray-100 bg-gradient-to-b from-gray-50/50 to-white sticky bottom-0 z-10 transition-all duration-300",
+        isFocused ? "from-blue-50/20 to-white shadow-sm" : "",
         className
       )}
     >
@@ -94,7 +94,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
             ref={textareaRef}
             placeholder={placeholder}
             className={cn(
-              "min-h-[48px] max-h-[120px] resize-none transition-all duration-200 border-blue-200 focus:border-blue-400 rounded-2xl",
+              "min-h-[48px] max-h-[120px] resize-none transition-all duration-200 border-blue-200/80 focus:border-blue-400 rounded-2xl",
               isFocused ? "shadow-sm" : ""
             )}
             rows={1}
