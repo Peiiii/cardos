@@ -10,7 +10,7 @@ interface CardPreviewProps {
 export function CardPreview({ className, children }: CardPreviewProps) {
   return (
     <div className={cn(
-      "flex flex-col h-full flex-1 min-w-[600px] max-w-[50%] bg-[#F8F9FC] pt-8 px-8 pb-6 border-l border-l-gray-100",
+      "flex flex-col h-full flex-1 min-w-[600px] bg-[#F8F9FC] pt-8 px-8 pb-6 border-l border-l-gray-100",
       className
     )}>
       <h2 className="text-sm font-medium text-blue-800/80 mb-4 pl-1">卡片预览</h2>
