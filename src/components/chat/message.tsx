@@ -61,7 +61,7 @@ export function Message({ content, isUser, timestamp }: MessageProps) {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-6 w-6 rounded-full hover:bg-blue-50"
+              className="h-6 w-6 rounded-full hover:bg-blue-50 relative"
               onClick={handleCopy}
               title="复制"
             >
@@ -69,6 +69,11 @@ export function Message({ content, isUser, timestamp }: MessageProps) {
                 <Check className="h-3 w-3 text-green-500" /> : 
                 <Copy className="h-3 w-3" />
               }
+              {isCopied && (
+                <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs bg-black/80 text-white py-1 px-2 rounded shadow-md z-20">
+                  已复制
+                </span>
+              )}
             </Button>
             <Button 
               variant="ghost" 
@@ -87,12 +92,6 @@ export function Message({ content, isUser, timestamp }: MessageProps) {
               <MoreHorizontal className="h-3 w-3" />
             </Button>
           </div>
-        )}
-        
-        {isCopied && !isUser && (
-          <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs bg-black/80 text-white py-1 px-2 rounded-full shadow-md z-20">
-            已复制
-          </span>
         )}
       </div>
     </div>
