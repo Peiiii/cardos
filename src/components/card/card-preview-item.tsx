@@ -54,9 +54,9 @@ export function CardPreviewItem({
   };
 
   return (
-    <Card className="w-full h-full flex flex-col shadow-lg transition-all duration-300 hover:shadow-xl rounded-xl overflow-hidden border-blue-100">
-      <CardHeader className="p-6 pb-2 flex flex-row items-center justify-between border-b border-blue-50 bg-gradient-to-r from-blue-50 to-white">
-        <CardTitle className="text-xl font-medium text-blue-800">{title}</CardTitle>
+    <Card className="w-full h-full flex flex-col shadow-lg transition-all duration-300 hover:shadow-xl rounded-xl overflow-hidden border-blue-200 bg-white">
+      <CardHeader className="p-6 pb-2 flex flex-row items-center justify-between border-b border-blue-100 bg-gradient-to-r from-blue-100/50 to-white">
+        <CardTitle className="text-xl font-semibold text-blue-900">{title}</CardTitle>
         <div className="flex space-x-1">
           <Button 
             variant="ghost" 
@@ -115,10 +115,10 @@ export function CardPreviewItem({
         </div>
       </CardHeader>
       <CardContent className="p-6 pt-4 flex-1 overflow-auto transition-colors duration-300 hover:bg-blue-50/10">
-        <div className="text-base whitespace-pre-line">{content}</div>
+        <div className="text-base leading-relaxed whitespace-pre-line">{content}</div>
       </CardContent>
       {timestamp && (
-        <CardFooter className="p-6 pt-2 border-t border-blue-50 text-xs text-blue-400 bg-gradient-to-r from-white to-blue-50/30">
+        <CardFooter className="p-6 pt-2 border-t border-blue-100 text-xs text-blue-500 bg-gradient-to-r from-white to-blue-50/40">
           创建于 {timestamp}
         </CardFooter>
       )}

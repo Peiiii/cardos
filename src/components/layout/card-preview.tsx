@@ -9,7 +9,7 @@ interface CardPreviewProps {
 export function CardPreview({ className, children }: CardPreviewProps) {
   return (
     <div className={cn(
-      "flex flex-col h-full flex-1 min-w-[600px] bg-gradient-to-br from-blue-50/20 via-white to-blue-50/10 p-8",
+      "flex flex-col h-full flex-1 min-w-[600px] bg-[#F5F7FA] p-6 pl-8 border-l border-l-gray-200",
       className
     )}>
       <div className="flex-1 flex items-center justify-center">
