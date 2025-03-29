@@ -1,9 +1,8 @@
-import React from 'react';
-import { useOutletContext } from 'react-router-dom';
 import { Message } from '@/components/chat/message';
-import { useResponsive } from '@/hooks/use-responsive';
-import { MessageList } from '@/components/chat/message-list';
 import { MessageInput } from '@/components/chat/message-input';
+import { MessageList } from '@/components/chat/message-list';
+import { useResponsive } from '@/hooks/use-responsive';
+import { useOutletContext } from 'react-router-dom';
 
 type ContextType = { 
   messages: Array<{ id: string; content: string; isUser: boolean; timestamp: string }>;
