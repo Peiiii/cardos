@@ -115,8 +115,10 @@
 - **SmartCard**: 指产品业务层面的AI生成卡片，存储在数据库中
 - 将相关类型、接口和服务相应重命名，以保持一致性
 
-## 文件命名规则
+## 代码提交规范
 - **Git提交信息**: **使用英文编写commit message，简洁明了地描述变更内容（这是必须遵守的重要规范）**
+
+## 文件命名规则
 - **文件命名**: 使用 kebab-case（如 `card.tsx`、`format-date.ts`、`card-types.ts`）
 - **测试文件**: 使用 `*.test.ts` 或 `*.spec.ts`
 - **目录命名**: 使用 kebab-case（如 `card-components`、`api-services`）
