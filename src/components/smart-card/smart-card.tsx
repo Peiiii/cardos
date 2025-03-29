@@ -19,7 +19,6 @@ export interface SmartCardProps {
  * SmartCard组件 - 展示AI生成的卡片内容
  */
 export function SmartCard({
-  id,
   title,
   content,
   html,

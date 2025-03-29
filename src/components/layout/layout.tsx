@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useResponsive } from '@/hooks/use-responsive';
 import { Button } from '@/components/ui/button';
 
@@ -53,6 +53,25 @@ export function Layout() {
   
   // 当前卡片
   const [currentCard, setCurrentCard] = useState(initialCard);
+  
+  // 侧边栏折叠状态
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebar-collapsed');
+    return saved !== null ? JSON.parse(saved) : true; // 默认为收起状态
+  });
+  
+  // 监听侧边栏状态变化
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('sidebar-collapsed');
+      if (saved !== null) {
+        setIsSidebarCollapsed(JSON.parse(saved));
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
   
   // 移动端抽屉状态
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -193,7 +212,10 @@ export function Layout() {
           />
         ))}
       </DesktopSidebar>
-      <DesktopChatArea onSendMessage={handleSendMessage}>
+      <DesktopChatArea 
+        onSendMessage={handleSendMessage}
+        className={isSidebarCollapsed ? "w-[500px]" : "w-[400px]"}
+      >
         {messages.map(msg => (
           <Message 
             key={msg.id}
@@ -203,7 +225,9 @@ export function Layout() {
           />
         ))}
       </DesktopChatArea>
-      <DesktopCardPreview>
+      <DesktopCardPreview
+        className={isSidebarCollapsed ? "min-w-[calc(100%-560px)]" : "min-w-[600px]"}
+      >
         <CardPreviewItem
           title={currentCard.title}
           content={currentCard.content}

@@ -28,7 +28,7 @@ export function Sidebar({
   // 从本地存储中获取折叠状态
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
-    return saved ? JSON.parse(saved) : false;
+    return saved !== null ? JSON.parse(saved) : true; // 默认为收起状态
   });
 
   // 状态变化时保存到本地存储
