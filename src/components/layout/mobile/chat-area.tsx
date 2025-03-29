@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { MessageList } from '@/components/chat/message-list';
 import { MessageInput } from '@/components/chat/message-input';
-import { useResponsive } from '@/hooks/use-responsive';
 
 interface ChatAreaProps {
   className?: string;
@@ -11,12 +10,9 @@ interface ChatAreaProps {
 }
 
 export function ChatArea({ className, children, onSendMessage }: ChatAreaProps) {
-  const { isMobile } = useResponsive();
-  
   return (
     <div className={cn(
-      "flex flex-col h-full bg-white",
-      isMobile ? "w-full" : "w-[400px] border-r border-r-gray-100",
+      "flex flex-col h-full w-full bg-white",
       className
     )}>
       {/* 消息列表 - 填充剩余空间 */}

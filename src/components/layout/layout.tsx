@@ -1,11 +1,23 @@
 import { useState } from 'react';
-import { MainLayout } from './main-layout';
-import { Sidebar } from './sidebar';
-import { ChatArea } from './chat-area';
-import { CardPreview } from './card-preview';
+import { useResponsive } from '@/hooks/use-responsive';
+import { Button } from '@/components/ui/button';
+
+// 桌面端组件
+import { DesktopLayout } from './desktop/desktop-layout';
+import { Sidebar as DesktopSidebar } from './desktop/sidebar';
+import { ChatArea as DesktopChatArea } from './desktop/chat-area';
+import { CardPreview as DesktopCardPreview } from './desktop/card-preview';
+
+// 移动端组件
+import { MobileLayout } from './mobile/mobile-layout';
+import { Drawer as MobileDrawer } from './mobile/drawer';
+import { ChatArea as MobileChatArea } from './mobile/chat-area';
+import { CardPreview as MobileCardPreview } from './mobile/card-preview';
+
 import { ConversationItem } from '../chat/conversation-item';
 import { Message } from '../chat/message';
 import { CardPreviewItem } from '../card/card-preview-item';
+import { useNavigate } from 'react-router-dom';
 
 // 示例数据
 const exampleConversations = [
@@ -30,6 +42,9 @@ const initialCard = {
 };
 
 export function Layout() {
+  const { isMobile } = useResponsive();
+  const navigate = useNavigate();
+
   // 当前活跃的对话
   const [activeConversation, setActiveConversation] = useState(exampleConversations[0]);
   
@@ -38,6 +53,12 @@ export function Layout() {
   
   // 当前卡片
   const [currentCard, setCurrentCard] = useState(initialCard);
+  
+  // 移动端抽屉状态
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
+  // 移动端是否显示卡片预览
+  const [showCardPreview, setShowCardPreview] = useState(false);
   
   // 添加新消息
   const handleSendMessage = (content: string) => {
@@ -74,6 +95,9 @@ export function Layout() {
   // 切换对话
   const handleSelectConversation = (conversation: typeof exampleConversations[0]) => {
     setActiveConversation(conversation);
+    if (isMobile) {
+      setIsDrawerOpen(false);
+    }
   };
 
   // 处理新建对话
@@ -82,9 +106,81 @@ export function Layout() {
     alert('新建对话');
   };
 
+  // 处理查看卡片预览
+  const handleViewCard = () => {
+    if (isMobile) {
+      setShowCardPreview(true);
+      navigate(`/card/${currentCard.id}`);
+    }
+  };
+
+  // 移动端布局
+  if (isMobile) {
+    // 如果是卡片预览模式
+    if (showCardPreview) {
+      return (
+        <MobileCardPreview>
+          <CardPreviewItem
+            title={currentCard.title}
+            content={currentCard.content}
+            timestamp={currentCard.timestamp}
+            onShare={() => alert('已复制分享链接！')}
+            onExport={() => alert('已导出为PDF！')}
+            onCopy={() => alert('已复制内容到剪贴板！')}
+          />
+        </MobileCardPreview>
+      );
+    }
+    
+    // 对话模式
+    return (
+      <MobileLayout>
+        <MobileDrawer
+          isOpen={isDrawerOpen}
+          onOpenChange={setIsDrawerOpen}
+          onNewChatClick={handleNewChat}
+        >
+          {exampleConversations.map(conv => (
+            <ConversationItem 
+              key={conv.id}
+              title={conv.title}
+              timestamp={conv.timestamp}
+              isActive={conv.id === activeConversation.id}
+              onClick={() => handleSelectConversation(conv)}
+            />
+          ))}
+        </MobileDrawer>
+        
+        <MobileChatArea onSendMessage={handleSendMessage}>
+          {messages.map(msg => (
+            <Message 
+              key={msg.id}
+              content={msg.content}
+              isUser={msg.isUser}
+              timestamp={msg.timestamp}
+            />
+          ))}
+        </MobileChatArea>
+        
+        {/* 添加查看卡片按钮 */}
+        <div className="fixed bottom-20 right-4 z-10">
+          <Button 
+            className="rounded-full h-12 w-12 bg-blue-500 hover:bg-blue-600 text-white shadow-lg"
+            onClick={handleViewCard}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </Button>
+        </div>
+      </MobileLayout>
+    );
+  }
+
+  // 桌面端布局
   return (
-    <MainLayout>
-      <Sidebar
+    <DesktopLayout>
+      <DesktopSidebar
         onNewChatClick={handleNewChat}
       >
         {exampleConversations.map(conv => (
@@ -96,8 +192,8 @@ export function Layout() {
             onClick={() => handleSelectConversation(conv)}
           />
         ))}
-      </Sidebar>
-      <ChatArea onSendMessage={handleSendMessage}>
+      </DesktopSidebar>
+      <DesktopChatArea onSendMessage={handleSendMessage}>
         {messages.map(msg => (
           <Message 
             key={msg.id}
@@ -106,8 +202,8 @@ export function Layout() {
             timestamp={msg.timestamp}
           />
         ))}
-      </ChatArea>
-      <CardPreview>
+      </DesktopChatArea>
+      <DesktopCardPreview>
         <CardPreviewItem
           title={currentCard.title}
           content={currentCard.content}
@@ -116,7 +212,7 @@ export function Layout() {
           onExport={() => alert('已导出为PDF！')}
           onCopy={() => alert('已复制内容到剪贴板！')}
         />
-      </CardPreview>
-    </MainLayout>
+      </DesktopCardPreview>
+    </DesktopLayout>
   );
 } 

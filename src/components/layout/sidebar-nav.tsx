@@ -19,7 +19,8 @@ export function SidebarNav({
 }: SidebarNavProps) {
   return (
     <div className={cn(
-      "flex flex-col h-full w-[200px] bg-[#F3F4F6] border-r border-r-gray-200",
+      "flex flex-col gap-2 p-4",
+      isCollapsed && "items-center p-2",
       className
     )}>
       <Button 

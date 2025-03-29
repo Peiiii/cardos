@@ -82,6 +82,7 @@
 - [组件文档](./development/components.md) - 组件使用文档
 - [部署文档](./development/deployment.md) - 部署相关文档
 - [实现方案](./development/implementation.md) - 详细实现方案
+- [移动端适配方案](./development/mobile-implementation.md) - 移动端适配实施计划
 
 ### 5. 项目管理
 - [里程碑](./project/milestones.md) - 项目里程碑
@@ -207,6 +208,17 @@
   - 在 `docs/product/interface-design.md` 中添加了完整的界面设计规范
   - 包含设计理念、布局系统、色彩系统、排版系统、组件样式等内容
   - 在文档README中添加了界面设计文档的引用
+- 完成了移动端适配的基础架构：
+  - 创建了 `useResponsive` hook 用于响应式布局
+  - 实现了移动端抽屉组件 `MobileDrawer`
+  - 更新了 `MainLayout`、`Sidebar`、`ChatArea` 和 `CardPreview` 组件以支持移动端
+  - 创建了详细的移动端适配实施计划文档
+- 重构了布局组件结构，将移动端和桌面端组件分离：
+  - 创建了 `desktop` 和 `mobile` 目录，分别包含各自平台的组件
+  - 在 `layout.tsx` 中根据设备类型选择适用的布局
+  - 实现了移动端的抽屉导航和全屏卡片预览
+  - 更新了路由配置以支持移动端视图切换
+  - 提高了代码的可维护性和可扩展性
 
 ---
 *注意：本文档仅供助手服务使用，长度控制在500行以内，确保关键信息可被上下文捕获* 
