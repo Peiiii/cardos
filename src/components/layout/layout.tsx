@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useResponsive } from '@/hooks/use-responsive';
 import { Button } from '@/components/ui/button';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 // 桌面端组件
 import { DesktopLayout } from './desktop/desktop-layout';
@@ -11,13 +12,9 @@ import { CardPreview as DesktopCardPreview } from './desktop/card-preview';
 // 移动端组件
 import { MobileLayout } from './mobile/mobile-layout';
 import { Drawer as MobileDrawer } from './mobile/drawer';
-import { ChatArea as MobileChatArea } from './mobile/chat-area';
-import { CardPreview as MobileCardPreview } from './mobile/card-preview';
 
 import { ConversationItem } from '../chat/conversation-item';
-import { Message } from '../chat/message';
 import { CardPreviewItem } from '../card/card-preview-item';
-import { useNavigate } from 'react-router-dom';
 
 // 示例数据
 const exampleConversations = [
@@ -44,7 +41,8 @@ const initialCard = {
 export function Layout() {
   const { isMobile } = useResponsive();
   const navigate = useNavigate();
-
+  const location = useLocation();
+  
   // 当前活跃的对话
   const [activeConversation, setActiveConversation] = useState(exampleConversations[0]);
   
@@ -54,30 +52,11 @@ export function Layout() {
   // 当前卡片
   const [currentCard, setCurrentCard] = useState(initialCard);
   
-  // 侧边栏折叠状态
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    const saved = localStorage.getItem('sidebar-collapsed');
-    return saved !== null ? JSON.parse(saved) : true; // 默认为收起状态
-  });
-  
-  // 监听侧边栏状态变化
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const saved = localStorage.getItem('sidebar-collapsed');
-      if (saved !== null) {
-        setIsSidebarCollapsed(JSON.parse(saved));
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-  
   // 移动端抽屉状态
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   
-  // 移动端是否显示卡片预览
-  const [showCardPreview, setShowCardPreview] = useState(false);
+  // 是否是卡片详情页
+  const isCardView = location.pathname.startsWith('/card/');
   
   // 添加新消息
   const handleSendMessage = (content: string) => {
@@ -127,30 +106,11 @@ export function Layout() {
 
   // 处理查看卡片预览
   const handleViewCard = () => {
-    if (isMobile) {
-      setShowCardPreview(true);
-      navigate(`/card/${currentCard.id}`);
-    }
+    navigate(`/card/${currentCard.id}`);
   };
 
   // 移动端布局
   if (isMobile) {
-    // 如果是卡片预览模式
-    if (showCardPreview) {
-      return (
-        <MobileCardPreview>
-          <CardPreviewItem
-            title={currentCard.title}
-            content={currentCard.content}
-            timestamp={currentCard.timestamp}
-            onShare={() => alert('已复制分享链接！')}
-            onExport={() => alert('已导出为PDF！')}
-            onCopy={() => alert('已复制内容到剪贴板！')}
-          />
-        </MobileCardPreview>
-      );
-    }
-    
     // 对话模式
     return (
       <MobileLayout>
@@ -170,28 +130,27 @@ export function Layout() {
           ))}
         </MobileDrawer>
         
-        <MobileChatArea onSendMessage={handleSendMessage}>
-          {messages.map(msg => (
-            <Message 
-              key={msg.id}
-              content={msg.content}
-              isUser={msg.isUser}
-              timestamp={msg.timestamp}
-            />
-          ))}
-        </MobileChatArea>
+        {/* 渲染子路由内容 */}
+        <Outlet context={{ 
+          messages, 
+          currentCard, 
+          handleSendMessage,
+          setCurrentCard
+        }} />
         
-        {/* 添加查看卡片按钮 */}
-        <div className="fixed bottom-20 right-4 z-10">
-          <Button 
-            className="rounded-full h-12 w-12 bg-blue-500 hover:bg-blue-600 text-white shadow-lg"
-            onClick={handleViewCard}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-          </Button>
-        </div>
+        {/* 添加查看卡片按钮 - 只在聊天页面显示 */}
+        {!isCardView && (
+          <div className="fixed bottom-20 right-4 z-10">
+            <Button 
+              className="rounded-full h-12 w-12 bg-blue-500 hover:bg-blue-600 text-white shadow-lg"
+              onClick={handleViewCard}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </Button>
+          </div>
+        )}
       </MobileLayout>
     );
   }
@@ -212,31 +171,30 @@ export function Layout() {
           />
         ))}
       </DesktopSidebar>
-      <DesktopChatArea 
-        onSendMessage={handleSendMessage}
-        className={isSidebarCollapsed ? "w-[500px]" : "w-[400px]"}
-      >
-        {messages.map(msg => (
-          <Message 
-            key={msg.id}
-            content={msg.content}
-            isUser={msg.isUser}
-            timestamp={msg.timestamp}
-          />
-        ))}
+      
+      <DesktopChatArea onSendMessage={handleSendMessage}>
+        {/* 渲染子路由的内容 */}
+        <Outlet context={{ 
+          messages, 
+          currentCard, 
+          handleSendMessage,
+          setCurrentCard
+        }} />
       </DesktopChatArea>
-      <DesktopCardPreview
-        className={isSidebarCollapsed ? "min-w-[calc(100%-560px)]" : "min-w-[600px]"}
-      >
-        <CardPreviewItem
-          title={currentCard.title}
-          content={currentCard.content}
-          timestamp={currentCard.timestamp}
-          onShare={() => alert('已复制分享链接！')}
-          onExport={() => alert('已导出为PDF！')}
-          onCopy={() => alert('已复制内容到剪贴板！')}
-        />
-      </DesktopCardPreview>
+      
+      {/* 只在非卡片详情页显示卡片预览 */}
+      {!isCardView && (
+        <DesktopCardPreview>
+          <CardPreviewItem
+            title={currentCard.title}
+            content={currentCard.content}
+            timestamp={currentCard.timestamp}
+            onShare={() => alert('已复制分享链接！')}
+            onExport={() => alert('已导出为PDF！')}
+            onCopy={() => alert('已复制内容到剪贴板！')}
+          />
+        </DesktopCardPreview>
+      )}
     </DesktopLayout>
   );
 } 
