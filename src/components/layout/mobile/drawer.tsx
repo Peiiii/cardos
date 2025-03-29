@@ -4,7 +4,7 @@ import { SidebarNav } from '../sidebar-nav';
 import { ConversationList } from '@/components/chat/conversation-list';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 interface DrawerProps {
   className?: string;
@@ -37,16 +37,24 @@ export function Drawer({
       </Button>
 
       <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent side="left" className="w-[80%] sm:w-[350px] p-0">
+        <SheetContent side="left" className="w-[80%] sm:w-[350px] p-0 border-0" hideCloseButton>
           <div className={cn(
-            "flex flex-col h-full border-r border-r-gray-100 bg-gradient-to-b from-gray-50/80 to-gray-50/40",
+            "flex flex-col h-full bg-white",
             className
           )}>
             {/* Logo 和品牌 */}
-            <div className="flex items-center justify-center py-4 border-b border-b-blue-100">
+            <div className="flex items-center justify-between py-4 px-4 border-b border-b-gray-100">
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
                 CardOS
               </h1>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => onOpenChange(false)}
+                className="h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
             
             {/* 导航菜单 */}
@@ -58,7 +66,7 @@ export function Drawer({
             />
 
             {/* 分隔线 */}
-            <div className="h-px bg-blue-100" />
+            <div className="h-px bg-gray-100" />
 
             {/* 对话列表 */}
             <ConversationList>
