@@ -1,18 +1,10 @@
-import { Routes, Route } from 'react-router-dom';
-import { Layout } from './components/layout/layout';
-import { useResponsive } from './hooks/use-responsive';
+import { useRoutes } from 'react-router-dom';
+import routes from './routes';
 
 // 应用主组件
 export default function App() {
-  const { isMobile } = useResponsive();
+  // 使用useRoutes渲染路由配置
+  const element = useRoutes(routes);
   
-  return (
-    <Routes>
-      <Route path="/" element={<Layout />} />
-      {/* 移动端卡片预览路由 */}
-      {isMobile && (
-        <Route path="/card/:cardId" element={<Layout />} />
-      )}
-    </Routes>
-  );
+  return element;
 }
