@@ -16,7 +16,7 @@ import { Drawer as MobileDrawer } from './mobile/drawer';
 import { ConversationItem } from '../chat/conversation-item';
 import { CardPreviewItem } from '../card/card-preview-item';
 
-// 示例数据
+// 示例数据 - 在实际应用中应从状态管理库或API获取
 const exampleConversations = [
   { id: '1', title: '如何烹饪意大利面', timestamp: '今天 10:30' },
   { id: '2', title: '学习React的最佳实践', timestamp: '昨天 15:45' },
@@ -38,19 +38,7 @@ const initialCard = {
   timestamp: '10:31' 
 };
 
-interface LayoutProps {
-  /**
-   * 是否显示卡片预览区域
-   * @default true
-   */
-  showCardPreview?: boolean;
-}
-
-/**
- * 通用布局组件
- * 可以通过props控制是否显示卡片预览区域
- */
-export function Layout({ showCardPreview = true }: LayoutProps) {
+export function ChatLayout() {
   const { isMobile } = useResponsive();
   const navigate = useNavigate();
   
@@ -145,19 +133,17 @@ export function Layout({ showCardPreview = true }: LayoutProps) {
           setCurrentCard
         }} />
         
-        {/* 添加查看卡片按钮 - 只在显示卡片预览时显示 */}
-        {showCardPreview && (
-          <div className="fixed bottom-20 right-4 z-10">
-            <Button 
-              className="rounded-full h-12 w-12 bg-blue-500 hover:bg-blue-600 text-white shadow-lg"
-              onClick={handleViewCard}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </Button>
-          </div>
-        )}
+        {/* 添加查看卡片按钮 */}
+        <div className="fixed bottom-20 right-4 z-10">
+          <Button 
+            className="rounded-full h-12 w-12 bg-blue-500 hover:bg-blue-600 text-white shadow-lg"
+            onClick={handleViewCard}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </Button>
+        </div>
       </MobileLayout>
     );
   }
@@ -189,19 +175,17 @@ export function Layout({ showCardPreview = true }: LayoutProps) {
         }} />
       </DesktopChatArea>
       
-      {/* 只在显示卡片预览时显示 */}
-      {showCardPreview && (
-        <DesktopCardPreview>
-          <CardPreviewItem
-            title={currentCard.title}
-            content={currentCard.content}
-            timestamp={currentCard.timestamp}
-            onShare={() => alert('已复制分享链接！')}
-            onExport={() => alert('已导出为PDF！')}
-            onCopy={() => alert('已复制内容到剪贴板！')}
-          />
-        </DesktopCardPreview>
-      )}
+      {/* 显示卡片预览 */}
+      <DesktopCardPreview>
+        <CardPreviewItem
+          title={currentCard.title}
+          content={currentCard.content}
+          timestamp={currentCard.timestamp}
+          onShare={() => alert('已复制分享链接！')}
+          onExport={() => alert('已导出为PDF！')}
+          onCopy={() => alert('已复制内容到剪贴板！')}
+        />
+      </DesktopCardPreview>
     </DesktopLayout>
   );
 } 

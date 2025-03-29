@@ -9,41 +9,64 @@ import ChatView from '@/pages/chat-view';
 import CardView from '@/pages/card-view';
 
 // 布局组件
-import { Layout } from '@/components/layout/layout';
+import { RootLayout } from '@/components/layout/root-layout';
+import { MainLayout } from '@/components/layout/main-layout';
+import { ChatLayout } from '@/components/layout/chat-layout';
+import { CardLayout } from '@/components/layout/card-layout';
 
 // 路由配置
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Layout />,
+    element: <RootLayout />,
     children: [
       {
         index: true,
         element: <Navigate to="/chat" replace />
       },
+      // 聊天相关路由 - 使用聊天布局（带卡片预览）
       {
         path: 'chat',
-        element: <ChatView />
+        element: <ChatLayout />,
+        children: [
+          {
+            index: true,
+            element: <ChatView />
+          },
+          {
+            path: ':conversationId',
+            element: <ChatView />
+          }
+        ]
       },
-      {
-        path: 'chat/:conversationId',
-        element: <ChatView />
-      },
-      {
-        path: 'home',
-        element: <HomePage />
-      },
-      {
-        path: 'create',
-        element: <CreateCardPage />
-      },
-      {
-        path: 'settings',
-        element: <SettingsPage />
-      },
+      // 卡片详情路由 - 使用卡片布局（无卡片预览）
       {
         path: 'card/:cardId',
-        element: <CardView />
+        element: <CardLayout />,
+        children: [
+          {
+            index: true,
+            element: <CardView />
+          }
+        ]
+      },
+      // 其他页面路由 - 使用主布局
+      {
+        element: <MainLayout />,
+        children: [
+          {
+            path: 'home',
+            element: <HomePage />
+          },
+          {
+            path: 'create',
+            element: <CreateCardPage />
+          },
+          {
+            path: 'settings',
+            element: <SettingsPage />
+          }
+        ]
       }
     ]
   },
