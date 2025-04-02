@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 export interface CardPreviewItemProps {
   title: string;
   content: string;
-  timestamp?: string;
+  timestamp?: number;
   onShare?: () => void;
   onExport?: () => void;
   onCopy?: () => void;
@@ -119,7 +119,7 @@ export function CardPreviewItem({
       </CardContent>
       {timestamp && (
         <CardFooter className="p-6 pt-3 flex-shrink-0 border-t border-blue-100 text-xs text-blue-500 bg-gradient-to-r from-white to-blue-50/40">
-          创建于 {timestamp}
+          创建于 {new Date(timestamp).toLocaleString()}
         </CardFooter>
       )}
     </Card>

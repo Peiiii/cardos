@@ -37,8 +37,8 @@ export default function HomePage() {
   }, []);
 
   return (
-    <>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">我的卡片</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-semibold text-foreground mb-6">我的卡片</h2>
       
       {/* 加载状态 */}
       {loading && (
@@ -102,6 +102,6 @@ export default function HomePage() {
           )}
         </>
       )}
-    </>
+    </div>
   );
 } 

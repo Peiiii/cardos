@@ -92,6 +92,57 @@ cardos/
   };
   ```
 
+### 2. 颜色规范
+
+- **颜色使用原则**
+  - 严格使用主题系统定义的语义化颜色变量
+  - 不直接使用硬编码的颜色值或Tailwind原生颜色类
+  - 保持一致的颜色语义，确保UI视觉统一
+
+- **Tailwind 类名使用**
+  ```tsx
+  // ❌ 错误示例 - 直接使用颜色名
+  <div className="bg-blue-500 text-white border border-gray-200">
+    <h2 className="text-gray-800">标题</h2>
+    <p className="text-gray-600">内容</p>
+  </div>
+
+  // ✅ 正确示例 - 使用语义化颜色
+  <div className="bg-primary text-primary-foreground border border-border">
+    <h2 className="text-foreground">标题</h2>
+    <p className="text-secondary-foreground">内容</p>
+  </div>
+  ```
+
+- **语义化颜色映射**
+  | 用途 | 语义化类名 | 不应使用的类名 |
+  |-----|-----------|-------------|
+  | 主要按钮 | `bg-primary text-primary-foreground` | `bg-blue-500 text-white` |
+  | 次要按钮 | `bg-secondary text-secondary-foreground` | `bg-gray-100 text-gray-800` |
+  | 警告提示 | `bg-warning/10 text-warning border-warning` | `bg-yellow-50 text-yellow-700 border-yellow-500` |
+  | 错误提示 | `bg-error/10 text-error border-error` | `bg-red-50 text-red-700 border-red-500` |
+  | 成功提示 | `bg-success/10 text-success border-success` | `bg-green-50 text-green-700 border-green-500` |
+  | 背景 | `bg-background` | `bg-white`, `bg-gray-50` |
+  | 文本 | `text-foreground` | `text-gray-900`, `text-black` |
+  | 次要文本 | `text-secondary-foreground` | `text-gray-500`, `text-gray-600` |
+  | 输入框 | `bg-input text-input-foreground` | `bg-gray-50 text-gray-900` |
+  | 边框 | `border-border` | `border-gray-200`, `border-slate-200` |
+  | 用户消息 | `bg-message-user text-message-user-foreground` | `bg-blue-50 text-blue-700` |
+  | AI消息 | `bg-message-ai text-message-ai-foreground` | `bg-gray-50 text-gray-700` |
+
+- **透明度变量**
+  ```tsx
+  // ❌ 错误示例 - 硬编码透明度
+  <div className="bg-blue-500/10">半透明蓝色背景</div>
+
+  // ✅ 正确示例 - 使用语义化颜色带透明度
+  <div className="bg-primary/10">半透明主色背景</div>
+  ```
+
+- **暗色模式支持**
+  - 无需特殊处理，主题系统会自动处理深色模式的颜色切换
+  - 如需测试深色模式：`document.documentElement.classList.add('dark')`
+
 - **样式规范**
   ```scss
   // 使用 CSS Modules
@@ -113,7 +164,7 @@ cardos/
   }
   ```
 
-### 2. Git 规范
+### 3. Git 规范
 - **分支管理**
   - main：主分支
   - develop：开发分支
@@ -138,7 +189,7 @@ cardos/
   - 关联：关联相关 issue
   - 审查：至少一个审查者通过
 
-### 3. 测试规范
+### 4. 测试规范
 - **单元测试**
   ```typescript
   describe('Card Component', () => {
@@ -166,7 +217,7 @@ cardos/
   });
   ```
 
-### 4. 文档规范
+### 5. 文档规范
 - **组件文档**
   ```typescript
   /**

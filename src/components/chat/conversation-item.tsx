@@ -1,11 +1,13 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, MoreVertical } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { zhCN } from 'date-fns/locale';
 
 export interface ConversationItemProps {
   title: string;
   isActive?: boolean;
-  timestamp?: string;
+  timestamp?: number | string;
   onClick?: () => void;
   onMenuClick?: () => void;
 }
@@ -17,6 +19,12 @@ export function ConversationItem({
   onClick,
   onMenuClick
 }: ConversationItemProps) {
+  // 格式化时间
+  const formattedTime = timestamp ? formatDistanceToNow(new Date(timestamp), { 
+    addSuffix: true,
+    locale: zhCN 
+  }) : undefined;
+
   return (
     <div className="group relative">
       <Button
@@ -40,12 +48,12 @@ export function ConversationItem({
           )}>
             {title}
           </span>
-          {timestamp && (
+          {formattedTime && (
             <span className={cn(
               "text-xs truncate w-full",
               isActive ? "text-blue-400" : "text-muted-foreground"
             )}>
-              {timestamp}
+              {formattedTime}
             </span>
           )}
         </div>

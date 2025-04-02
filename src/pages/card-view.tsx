@@ -78,14 +78,16 @@ export default function CardView() {
 
   return (
     <div className="flex-1 p-6">
-      <CardPreviewItem
-        title={card.title}
-        content={card.htmlContent}
-        timestamp={new Date(card.createdAt).toLocaleString()}
-        onShare={() => alert('已复制分享链接！')}
-        onExport={() => alert('已导出为PDF！')}
-        onCopy={() => alert('已复制内容到剪贴板！')}
-      />
+      <div className="max-w-4xl mx-auto">
+        <CardPreviewItem
+          title={card.title}
+          content={card.htmlContent}
+          timestamp={card.createdAt}
+          onShare={() => alert('已复制分享链接！')}
+          onExport={() => alert('已导出为PDF！')}
+          onCopy={() => alert('已复制内容到剪贴板！')}
+        />
+      </div>
     </div>
   );
 } 

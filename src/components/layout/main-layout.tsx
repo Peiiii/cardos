@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useResponsive } from '@/hooks/use-responsive';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 // 桌面端组件
 import { DesktopLayout } from './desktop/desktop-layout';
@@ -21,6 +21,7 @@ const exampleConversations = [
 
 export function MainLayout() {
   const { isMobile } = useResponsive();
+  const navigate = useNavigate();
   
   // 当前活跃的对话
   const [activeConversation, setActiveConversation] = useState(exampleConversations[0]);
@@ -31,15 +32,25 @@ export function MainLayout() {
   // 切换对话
   const handleSelectConversation = (conversation: typeof exampleConversations[0]) => {
     setActiveConversation(conversation);
+    navigate(`/chat/${conversation.id}`);
     if (isMobile) {
       setIsDrawerOpen(false);
     }
   };
 
+  // 导航处理函数
+  const handleHistoryClick = () => {
+    navigate('/home');
+  };
+
   // 处理新建对话
   const handleNewChat = () => {
-    // 模拟新建对话
-    alert('新建对话');
+    navigate('/chat');
+  };
+  
+  // 设置页面导航
+  const handleSettingsClick = () => {
+    navigate('/settings');
   };
 
   // 移动端布局
@@ -49,7 +60,9 @@ export function MainLayout() {
         <MobileDrawer
           isOpen={isDrawerOpen}
           onOpenChange={setIsDrawerOpen}
+          onHistoryClick={handleHistoryClick}
           onNewChatClick={handleNewChat}
+          onSettingsClick={handleSettingsClick}
         >
           {exampleConversations.map(conv => (
             <ConversationItem 
@@ -74,7 +87,9 @@ export function MainLayout() {
   return (
     <DesktopLayout>
       <DesktopSidebar
+        onHistoryClick={handleHistoryClick}
         onNewChatClick={handleNewChat}
+        onSettingsClick={handleSettingsClick}
       >
         {exampleConversations.map(conv => (
           <ConversationItem 

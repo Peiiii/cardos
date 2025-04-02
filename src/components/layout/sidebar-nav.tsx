@@ -8,6 +8,7 @@ interface SidebarNavProps {
   onHistoryClick?: () => void;
   onNewChatClick?: () => void;
   onSettingsClick?: () => void;
+  isActive?: (path: string) => boolean;
 }
 
 export function SidebarNav({ 
@@ -15,7 +16,8 @@ export function SidebarNav({
   isCollapsed = false,
   onHistoryClick,
   onNewChatClick,
-  onSettingsClick
+  onSettingsClick,
+  isActive
 }: SidebarNavProps) {
   return (
     <div className={cn(
@@ -29,7 +31,8 @@ export function SidebarNav({
         className={cn(
           isCollapsed 
             ? "w-10 h-10 rounded-full hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 relative group" 
-            : "justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700 active:bg-blue-200" 
+            : "justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700 active:bg-blue-200",
+          isActive?.('/home') && "bg-blue-100 text-blue-700"
         )}
         onClick={onHistoryClick}
         title="历史对话"
@@ -48,7 +51,8 @@ export function SidebarNav({
         className={cn(
           isCollapsed 
             ? "w-10 h-10 rounded-full text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 relative group" 
-            : "justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-medium" 
+            : "justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-medium",
+          isActive?.('/chat') && "bg-blue-100 text-blue-700"
         )}
         onClick={onNewChatClick}
         title="新建对话"
@@ -67,7 +71,8 @@ export function SidebarNav({
         className={cn(
           isCollapsed 
             ? "w-10 h-10 rounded-full hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200 relative group" 
-            : "justify-start text-gray-600 hover:bg-gray-100 hover:text-gray-700" 
+            : "justify-start text-gray-600 hover:bg-gray-100 hover:text-gray-700",
+          isActive?.('/settings') && "bg-gray-100 text-gray-700"
         )}
         onClick={onSettingsClick}
         title="设置"

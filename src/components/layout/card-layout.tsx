@@ -34,15 +34,25 @@ export function CardLayout() {
   // 切换对话
   const handleSelectConversation = (conversation: typeof exampleConversations[0]) => {
     setActiveConversation(conversation);
+    navigate(`/chat/${conversation.id}`);
     if (isMobile) {
       setIsDrawerOpen(false);
     }
   };
 
+  // 导航处理函数
+  const handleHistoryClick = () => {
+    navigate('/home');
+  };
+
   // 处理新建对话
   const handleNewChat = () => {
-    // 模拟新建对话
-    alert('新建对话');
+    navigate('/chat');
+  };
+  
+  // 设置页面导航
+  const handleSettingsClick = () => {
+    navigate('/settings');
   };
 
   // 返回聊天界面
@@ -57,7 +67,9 @@ export function CardLayout() {
         <MobileDrawer
           isOpen={isDrawerOpen}
           onOpenChange={setIsDrawerOpen}
+          onHistoryClick={handleHistoryClick}
           onNewChatClick={handleNewChat}
+          onSettingsClick={handleSettingsClick}
         >
           {exampleConversations.map(conv => (
             <ConversationItem 
@@ -94,7 +106,9 @@ export function CardLayout() {
   return (
     <DesktopLayout>
       <DesktopSidebar
+        onHistoryClick={handleHistoryClick}
         onNewChatClick={handleNewChat}
+        onSettingsClick={handleSettingsClick}
       >
         {exampleConversations.map(conv => (
           <ConversationItem 

@@ -4,6 +4,7 @@ import { SidebarNav } from '../sidebar-nav';
 import { ConversationList } from '@/components/chat/conversation-list';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLocation } from 'react-router-dom';
 
 interface SidebarProps {
   className?: string;
@@ -20,19 +21,26 @@ export function Sidebar({
   onNewChatClick,
   onSettingsClick
 }: SidebarProps) {
-  // 从本地存储中获取折叠状态
+  const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
-    return saved !== null ? JSON.parse(saved) : true; // 默认为收起状态
+    return saved !== null ? JSON.parse(saved) : true;
   });
 
-  // 状态变化时保存到本地存储
   useEffect(() => {
     localStorage.setItem('sidebar-collapsed', JSON.stringify(isCollapsed));
   }, [isCollapsed]);
 
   const toggleCollapsed = () => {
     setIsCollapsed((prev: boolean) => !prev);
+  };
+
+  // 判断当前路由是否激活
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -69,6 +77,7 @@ export function Sidebar({
         onHistoryClick={onHistoryClick}
         onNewChatClick={onNewChatClick}
         onSettingsClick={onSettingsClick}
+        isActive={isActive}
       />
 
       {/* 分隔线 */}

@@ -5,7 +5,7 @@ import { useResponsive } from '@/hooks/use-responsive';
 import { useOutletContext } from 'react-router-dom';
 
 type ContextType = { 
-  messages: Array<{ id: string; content: string; isUser: boolean; timestamp: string }>;
+  messages: Array<{ id: string; content: string; isUser: boolean; timestamp: number }>;
   handleSendMessage: (content: string) => void;
 };
 
@@ -15,7 +15,7 @@ export default function ChatView() {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col h-full w-full bg-white">
+      <div className="flex flex-col h-full w-full bg-background">
         {/* 消息列表 - 填充剩余空间 */}
         <div className="flex-1 overflow-hidden">
           <MessageList className="h-full">
@@ -41,7 +41,7 @@ export default function ChatView() {
   }
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto bg-background">
       {messages.map(msg => (
         <Message 
           key={msg.id}

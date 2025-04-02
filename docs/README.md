@@ -18,6 +18,7 @@
 - [系统架构](./technical/architecture.md) - 系统整体架构
 - [AI生成系统](./technical/ai-generation.md) - AI生成相关设计
 - [卡片系统](./technical/card-system.md) - 卡片系统设计
+- [主题系统](./technical/theme-system.md) - 颜色主题与深色模式实现
 - [通信机制](./technical/communication.md) - 卡片间通信设计
 - [安全设计](./technical/security.md) - 安全相关设计
 
@@ -37,6 +38,7 @@
 | 日期 | 更新内容 | 更新人 |
 |------|----------|--------|
 | 2024-03-26 | 创建文档结构 | - |
+| 2024-04-01 | 添加主题系统文档 | - |
 
 ## 文档规范
 
