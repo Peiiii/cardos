@@ -12,7 +12,7 @@ interface ChatAreaProps {
 export function ChatArea({ className, children, onSendMessage }: ChatAreaProps) {
   return (
     <div className={cn(
-      "flex flex-col h-full border-r border-r-gray-100 bg-white",
+      "flex flex-col h-full border-r border-border bg-background",
       "transition-all duration-300",
       className || "w-[400px]"
     )}>

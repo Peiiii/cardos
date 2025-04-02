@@ -54,8 +54,8 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
   return (
     <div 
       className={cn(
-        "p-4 border-t border-t-gray-100 bg-gradient-to-b from-gray-50/50 to-white sticky bottom-0 z-10 transition-all duration-300",
-        isFocused ? "from-blue-50/20 to-white shadow-sm" : "",
+        "p-4 border-t border-border bg-background/95 sticky bottom-0 z-10 transition-all duration-300",
+        isFocused ? "shadow-sm backdrop-blur-sm" : "",
         className
       )}
     >
@@ -65,7 +65,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-8 w-8 rounded-full text-blue-500 hover:text-blue-600 hover:bg-blue-100"
+            className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
             title="附件"
           >
             <Paperclip className="h-4 w-4" />
@@ -73,7 +73,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-8 w-8 rounded-full text-blue-500 hover:text-blue-600 hover:bg-blue-100"
+            className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
             title="表情"
           >
             <Smile className="h-4 w-4" />
@@ -81,7 +81,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-8 w-8 rounded-full text-blue-500 hover:text-blue-600 hover:bg-blue-100"
+            className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
             title="语音"
           >
             <Mic className="h-4 w-4" />
@@ -94,7 +94,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
             ref={textareaRef}
             placeholder={placeholder}
             className={cn(
-              "min-h-[48px] max-h-[120px] resize-none transition-all duration-200 border-blue-200/80 focus:border-blue-400 rounded-2xl",
+              "min-h-[48px] max-h-[120px] resize-none transition-all duration-200 bg-background/50 border-border focus:border-accent/50 rounded-2xl",
               isFocused ? "shadow-sm" : ""
             )}
             rows={1}
@@ -111,7 +111,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
             size="icon" 
             className={cn(
               "shrink-0 transition-all duration-300 h-10 w-10 rounded-full",
-              isTyping ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md" : "bg-gray-200 text-gray-500"
+              isTyping ? "bg-accent/90 hover:bg-accent text-accent-foreground shadow-sm" : "bg-muted text-muted-foreground"
             )}
             onClick={handleSendMessage}
             disabled={!isTyping}

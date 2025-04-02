@@ -30,9 +30,9 @@ export function SidebarNav({
         size={isCollapsed ? "icon" : "default"}
         className={cn(
           isCollapsed 
-            ? "w-10 h-10 rounded-full hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 relative group" 
-            : "justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700 active:bg-blue-200",
-          isActive?.('/home') && "bg-blue-100 text-blue-700"
+            ? "w-10 h-10 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors duration-200 relative group" 
+            : "justify-start text-muted-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
+          isActive?.('/home') && "bg-accent text-accent-foreground"
         )}
         onClick={onHistoryClick}
         title="历史对话"
@@ -40,7 +40,7 @@ export function SidebarNav({
         <MessageSquare className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
         {!isCollapsed && "历史对话"}
         {isCollapsed && (
-          <span className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
+          <span className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-popover text-popover-foreground text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
             历史对话
           </span>
         )}
@@ -50,9 +50,9 @@ export function SidebarNav({
         size={isCollapsed ? "icon" : "default"}
         className={cn(
           isCollapsed 
-            ? "w-10 h-10 rounded-full text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 relative group" 
-            : "justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-medium",
-          isActive?.('/chat') && "bg-blue-100 text-blue-700"
+            ? "w-10 h-10 rounded-full text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-200 relative group" 
+            : "justify-start text-muted-foreground hover:bg-accent hover:text-accent-foreground font-medium",
+          isActive?.('/chat') && "bg-accent text-accent-foreground"
         )}
         onClick={onNewChatClick}
         title="新建对话"
@@ -60,7 +60,7 @@ export function SidebarNav({
         <Plus className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
         {!isCollapsed && "新建对话"}
         {isCollapsed && (
-          <span className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
+          <span className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-popover text-popover-foreground text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
             新建对话
           </span>
         )}
@@ -70,9 +70,9 @@ export function SidebarNav({
         size={isCollapsed ? "icon" : "default"}
         className={cn(
           isCollapsed 
-            ? "w-10 h-10 rounded-full hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200 relative group" 
-            : "justify-start text-gray-600 hover:bg-gray-100 hover:text-gray-700",
-          isActive?.('/settings') && "bg-gray-100 text-gray-700"
+            ? "w-10 h-10 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors duration-200 relative group" 
+            : "justify-start text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+          isActive?.('/settings') && "bg-accent text-accent-foreground"
         )}
         onClick={onSettingsClick}
         title="设置"
@@ -80,7 +80,7 @@ export function SidebarNav({
         <Settings className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
         {!isCollapsed && "设置"}
         {isCollapsed && (
-          <span className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
+          <span className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-popover text-popover-foreground text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
             设置
           </span>
         )}

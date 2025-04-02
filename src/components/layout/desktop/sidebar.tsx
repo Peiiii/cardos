@@ -45,7 +45,7 @@ export function Sidebar({
 
   return (
     <div className={cn(
-      "flex flex-col h-full relative border-r border-r-gray-100 bg-gradient-to-b from-gray-50/80 to-gray-50/40 transition-all duration-300",
+      "flex flex-col h-full relative border-r border-[--color-sidebar-border] bg-gradient-to-b from-[--color-sidebar-from] to-[--color-sidebar-to] transition-all duration-300",
       isCollapsed ? "w-[60px]" : "w-[200px]",
       className
     )}>
@@ -53,7 +53,7 @@ export function Sidebar({
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-3 top-[50%] transform -translate-y-1/2 h-6 w-6 rounded-full border border-blue-100 bg-white shadow-sm text-blue-500 hover:text-blue-700 hover:bg-blue-50 z-20 transition-colors duration-200"
+        className="absolute -right-3 top-[50%] transform -translate-y-1/2 h-6 w-6 rounded-full border border-[--color-sidebar-button-border] bg-[--color-sidebar-button-bg] shadow-sm text-[--color-sidebar-button-text] hover:text-[--color-sidebar-button-hover-text] hover:bg-[--color-sidebar-button-hover] z-20 transition-colors duration-200"
         onClick={toggleCollapsed}
         title={isCollapsed ? "展开侧边栏" : "收起侧边栏"}
       >
@@ -61,11 +61,11 @@ export function Sidebar({
       </Button>
 
       {/* Logo 和品牌 */}
-      <div className="flex items-center justify-center py-4 border-b border-b-blue-100 overflow-hidden">
+      <div className="flex items-center justify-center py-4 border-b border-[--color-sidebar-border] overflow-hidden">
         {isCollapsed ? (
-          <span className="text-xl font-bold text-blue-600">C</span>
+          <span className="text-xl font-bold text-[--color-sidebar-button-text]">C</span>
         ) : (
-          <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-[--color-sidebar-button-text] to-[--color-sidebar-button-hover-text] bg-clip-text text-transparent">
             CardOS
           </h1>
         )}
@@ -81,7 +81,7 @@ export function Sidebar({
       />
 
       {/* 分隔线 */}
-      <div className="h-px bg-blue-100" />
+      <div className="h-px bg-[--color-sidebar-border]" />
 
       {/* 对话列表 */}
       {!isCollapsed && (

@@ -38,8 +38,8 @@ export function Message({ content, isUser, timestamp }: MessageProps) {
         className={cn(
           "rounded-2xl py-2 px-3 max-w-[80%] relative transition-all duration-200 shadow-sm",
           isUser
-            ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-            : "bg-white border border-gray-100 hover:border-blue-100 text-foreground",
+            ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground"
+            : "bg-card border border-border hover:border-border/80 text-card-foreground",
           isHovered && !isUser && "shadow-md"
         )}
       >
@@ -51,35 +51,35 @@ export function Message({ content, isUser, timestamp }: MessageProps) {
         )}
 
         {isHovered && !isUser && (
-          <div className="absolute -right-2 top-0 transform -translate-y-1/2 flex items-center gap-1 bg-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute -right-2 top-0 transform -translate-y-1/2 flex items-center gap-1 bg-card rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 rounded-full hover:bg-blue-50"
+              className="h-6 w-6 rounded-full hover:bg-accent"
               onClick={toggleLike}
               title={isLiked ? "取消点赞" : "点赞"}
             >
               <ThumbsUp
                 className={cn(
                   "h-3 w-3",
-                  isLiked ? "text-blue-500 fill-blue-500" : ""
+                  isLiked ? "text-primary fill-primary" : "text-muted-foreground"
                 )}
               />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 rounded-full hover:bg-blue-50 relative"
+              className="h-6 w-6 rounded-full hover:bg-accent relative"
               onClick={handleCopy}
               title="复制"
             >
               {isCopied ? (
-                <Check className="h-3 w-3 text-green-500" />
+                <Check className="h-3 w-3 text-success" />
               ) : (
-                <Copy className="h-3 w-3" />
+                <Copy className="h-3 w-3 text-muted-foreground" />
               )}
               {isCopied && (
-                <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs bg-black/80 text-white py-1 px-2 rounded shadow-md z-20">
+                <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs bg-popover text-popover-foreground py-1 px-2 rounded shadow-md z-20">
                   已复制
                 </span>
               )}
@@ -87,18 +87,18 @@ export function Message({ content, isUser, timestamp }: MessageProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 rounded-full hover:bg-blue-50"
+              className="h-6 w-6 rounded-full hover:bg-accent"
               title="回复"
             >
-              <Reply className="h-3 w-3" />
+              <Reply className="h-3 w-3 text-muted-foreground" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 rounded-full hover:bg-blue-50"
+              className="h-6 w-6 rounded-full hover:bg-accent"
               title="更多"
             >
-              <MoreHorizontal className="h-3 w-3" />
+              <MoreHorizontal className="h-3 w-3 text-muted-foreground" />
             </Button>
           </div>
         )}

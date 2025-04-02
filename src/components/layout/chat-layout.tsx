@@ -11,7 +11,7 @@ import { CardPreview as DesktopCardPreview } from './desktop/card-preview';
 
 // 移动端组件
 import { MobileLayout } from './mobile/mobile-layout';
-import { Drawer as MobileDrawer } from './mobile/drawer';
+import { SidebarNav } from './sidebar-nav';
 
 import { ConversationItem } from '../chat/conversation-item';
 import { CardPreviewItem } from '../card/card-preview-item';
@@ -31,9 +31,6 @@ export function ChatLayout() {
   
   // 当前卡片
   const [currentCard, setCurrentCard] = useState(initialCard);
-  
-  // 移动端抽屉状态
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   
   // 添加新消息
   const handleSendMessage = (content: string) => {
@@ -71,9 +68,6 @@ export function ChatLayout() {
   const handleSelectConversation = (conversation: typeof exampleConversations[0]) => {
     setActiveConversation(conversation);
     navigate(`/chat/${conversation.id}`);
-    if (isMobile) {
-      setIsDrawerOpen(false);
-    }
   };
 
   // 导航处理函数
@@ -99,25 +93,43 @@ export function ChatLayout() {
   // 移动端布局
   if (isMobile) {
     return (
-      <MobileLayout>
-        <MobileDrawer
-          isOpen={isDrawerOpen}
-          onOpenChange={setIsDrawerOpen}
-          onHistoryClick={handleHistoryClick}
-          onNewChatClick={handleNewChat}
-          onSettingsClick={handleSettingsClick}
-        >
-          {exampleConversations.map(conv => (
-            <ConversationItem 
-              key={conv.id}
-              title={conv.title}
-              timestamp={conv.timestamp}
-              isActive={conv.id === activeConversation.id}
-              onClick={() => handleSelectConversation(conv)}
+      <MobileLayout
+        title={activeConversation.title}
+        drawer={
+          <div className="flex flex-col h-full">
+            {/* Logo 和品牌 */}
+            <div className="flex items-center justify-between py-4 px-4 border-b border-border">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                CardOS
+              </h1>
+            </div>
+            
+            {/* 导航菜单 */}
+            <SidebarNav 
+              isCollapsed={false}
+              onHistoryClick={handleHistoryClick}
+              onNewChatClick={handleNewChat}
+              onSettingsClick={handleSettingsClick}
             />
-          ))}
-        </MobileDrawer>
-        
+
+            {/* 分隔线 */}
+            <div className="h-px bg-border" />
+
+            {/* 对话列表 */}
+            <div className="flex-1 overflow-auto">
+              {exampleConversations.map(conv => (
+                <ConversationItem 
+                  key={conv.id}
+                  title={conv.title}
+                  timestamp={conv.timestamp}
+                  isActive={conv.id === activeConversation.id}
+                  onClick={() => handleSelectConversation(conv)}
+                />
+              ))}
+            </div>
+          </div>
+        }
+      >
         {/* 渲染子路由内容 */}
         <Outlet context={{ 
           messages, 
@@ -129,7 +141,7 @@ export function ChatLayout() {
         {/* 添加查看卡片按钮 */}
         <div className="fixed bottom-20 right-4 z-10">
           <Button 
-            className="rounded-full h-12 w-12 bg-blue-500 hover:bg-blue-600 text-white shadow-lg"
+            className="rounded-full h-12 w-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
             onClick={handleViewCard}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

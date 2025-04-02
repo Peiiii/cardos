@@ -15,10 +15,10 @@ export default function ChatView() {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col h-full w-full bg-background">
+      <div className="flex flex-col h-[calc(100vh-3.5rem)] w-full bg-background">
         {/* 消息列表 - 填充剩余空间 */}
-        <div className="flex-1 overflow-hidden">
-          <MessageList className="h-full">
+        <div className="flex-1 overflow-hidden relative">
+          <MessageList className="absolute inset-0 scrollbar-thin scrollbar-thumb-muted scrollbar-track-background">
             {messages.map(msg => (
               <Message 
                 key={msg.id}
@@ -31,7 +31,7 @@ export default function ChatView() {
         </div>
 
         {/* 输入区域 - 固定在底部 */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 border-t border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <MessageInput 
             onSend={handleSendMessage} 
           />
@@ -41,15 +41,17 @@ export default function ChatView() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-background">
-      {messages.map(msg => (
-        <Message 
-          key={msg.id}
-          content={msg.content}
-          isUser={msg.isUser}
-          timestamp={msg.timestamp}
-        />
-      ))}
+    <div className="h-full overflow-y-auto bg-background scrollbar-thin scrollbar-thumb-muted scrollbar-track-background">
+      <div className="max-w-3xl mx-auto">
+        {messages.map(msg => (
+          <Message 
+            key={msg.id}
+            content={msg.content}
+            isUser={msg.isUser}
+            timestamp={msg.timestamp}
+          />
+        ))}
+      </div>
     </div>
   );
 } 

@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 :root {
 
   --radius: 0.625rem;
@@ -18,7 +16,7 @@
 
   --popover-foreground: oklch(0.145 0 0);
 
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.6 0.15 250);
 
   --primary-foreground: oklch(0.985 0 0);
 
@@ -67,6 +65,29 @@
   --sidebar-border: oklch(0.922 0 0);
 
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* 默认主题颜色 - 映射到基础颜色 */
+  --color-primary: var(--blue-500);
+  --color-primary-foreground: var(--white);
+  
+  --color-secondary: var(--gray-100);
+  --color-secondary-foreground: var(--gray-900);
+  
+  --color-accent: var(--green-500);
+  --color-accent-foreground: var(--white);
+  
+  --color-background: var(--white);
+  --color-foreground: var(--gray-900);
+
+  /* 侧边栏颜色 */
+  --color-sidebar-from: var(--gray-50);
+  --color-sidebar-to: var(--gray-50);
+  --color-sidebar-border: var(--gray-200);
+  --color-sidebar-button-border: var(--blue-100);
+  --color-sidebar-button-bg: var(--white);
+  --color-sidebar-button-text: var(--blue-500);
+  --color-sidebar-button-hover: var(--blue-50);
+  --color-sidebar-button-hover-text: var(--blue-700);
 }
 
 .dark {
@@ -83,7 +104,7 @@
 
   --popover-foreground: oklch(0.985 0 0);
 
-  --primary: oklch(0.922 0 0);
+  --primary: oklch(0.7 0.15 250);
 
   --primary-foreground: oklch(0.205 0 0);
 
@@ -132,6 +153,29 @@
   --sidebar-border: oklch(1 0 0 / 10%);
 
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* 深色模式基础颜色 */
+  --color-primary: var(--blue-400, #60A5FA);
+  --color-primary-foreground: var(--black);
+  
+  --color-secondary: var(--gray-700);
+  --color-secondary-foreground: var(--gray-50);
+  
+  --color-accent: var(--green-400, #34D399);
+  --color-accent-foreground: var(--black);
+  
+  --color-background: var(--gray-900);
+  --color-foreground: var(--gray-50);
+
+  /* 侧边栏颜色 */
+  --color-sidebar-from: rgba(17, 24, 39, 0.2);
+  --color-sidebar-to: rgba(17, 24, 39, 0.1);
+  --color-sidebar-border: var(--gray-800);
+  --color-sidebar-button-border: var(--gray-700);
+  --color-sidebar-button-bg: var(--gray-900);
+  --color-sidebar-button-text: var(--blue-400);
+  --color-sidebar-button-hover: var(--gray-800);
+  --color-sidebar-button-hover-text: var(--blue-300);
 }
 
 @theme inline {
@@ -210,6 +254,7 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    @apply transition-colors duration-200;
   }
   body {
     @apply bg-background text-foreground;

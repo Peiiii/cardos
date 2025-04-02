@@ -23,11 +23,11 @@ export function MessageList({ className, children }: MessageListProps) {
   return (
     <div className="relative h-full">
       <ScrollArea className={cn("h-full", className)} ref={scrollAreaRef}>
-        <div className="p-4 pb-14">
+        <div className="p-4 pb-24">
           {children}
         </div>
       </ScrollArea>
-      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
     </div>
   );
 } 

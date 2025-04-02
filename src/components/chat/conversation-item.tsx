@@ -33,26 +33,26 @@ export function ConversationItem({
         className={cn(
           "w-full justify-start mb-1 p-2 transition-all duration-200 rounded-lg overflow-hidden",
           isActive 
-            ? "bg-blue-50 text-blue-700 hover:bg-blue-100" 
-            : "hover:bg-gray-100 hover:translate-x-1"
+            ? "bg-accent text-accent-foreground hover:bg-accent/80" 
+            : "hover:bg-muted hover:translate-x-1"
         )}
         onClick={onClick}
       >
         <MessageSquare className={cn(
           "mr-2 h-4 w-4 transition-colors duration-200 flex-shrink-0",
-          isActive ? "text-blue-500" : "text-gray-500"
+          isActive ? "text-accent-foreground" : "text-muted-foreground"
         )} />
         <div className="flex flex-col items-start text-left overflow-hidden">
           <span className={cn(
             "text-sm font-medium truncate w-full transition-colors duration-200",
-            isActive ? "text-blue-700" : "text-foreground"
+            isActive ? "text-accent-foreground" : "text-foreground"
           )}>
             {title}
           </span>
           {formattedTime && (
             <span className={cn(
               "text-xs truncate w-full",
-              isActive ? "text-blue-400" : "text-muted-foreground"
+              isActive ? "text-accent-foreground/70" : "text-muted-foreground"
             )}>
               {formattedTime}
             </span>
@@ -64,7 +64,7 @@ export function ConversationItem({
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 h-6 w-6 hover:bg-blue-100 text-gray-500 hover:text-blue-600"
+        className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 h-6 w-6 hover:bg-accent text-muted-foreground hover:text-accent-foreground"
         onClick={(e) => {
           e.stopPropagation();
           onMenuClick?.();
