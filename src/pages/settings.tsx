@@ -41,8 +41,6 @@ export default function SettingsPage() {
   
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold text-foreground mb-6">设置</h2>
-      
       {showSuccess && (
         <div className="bg-success/10 border-l-4 border-success p-4 mb-6">
           <div className="flex">

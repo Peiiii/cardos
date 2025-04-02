@@ -13,13 +13,7 @@ import { MobileLayout } from './mobile/mobile-layout';
 import { Drawer as MobileDrawer } from './mobile/drawer';
 
 import { ConversationItem } from '../chat/conversation-item';
-
-// 示例对话数据 - 在实际应用中应从状态管理库或API获取
-const exampleConversations = [
-  { id: '1', title: '如何烹饪意大利面', timestamp: '今天 10:30' },
-  { id: '2', title: '学习React的最佳实践', timestamp: '昨天 15:45' },
-  { id: '3', title: '旅行计划指南', timestamp: '3天前' },
-];
+import { exampleConversations } from '@/mock/chat-data';
 
 export function CardLayout() {
   const { isMobile } = useResponsive();

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useResponsive } from '@/hooks/use-responsive';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { MessageSquare, Plus, Settings } from 'lucide-react';
 
 // 桌面端组件
 import { DesktopLayout } from './desktop/desktop-layout';
@@ -8,16 +10,9 @@ import { Sidebar as DesktopSidebar } from './desktop/sidebar';
 
 // 移动端组件
 import { MobileLayout } from './mobile/mobile-layout';
-import { Drawer as MobileDrawer } from './mobile/drawer';
 
 import { ConversationItem } from '../chat/conversation-item';
-
-// 示例对话数据
-const exampleConversations = [
-  { id: '1', title: '如何烹饪意大利面', timestamp: '今天 10:30' },
-  { id: '2', title: '学习React的最佳实践', timestamp: '昨天 15:45' },
-  { id: '3', title: '旅行计划指南', timestamp: '3天前' },
-];
+import { exampleConversations } from '@/mock/chat-data';
 
 export function MainLayout() {
   const { isMobile } = useResponsive();
@@ -26,16 +21,10 @@ export function MainLayout() {
   // 当前活跃的对话
   const [activeConversation, setActiveConversation] = useState(exampleConversations[0]);
   
-  // 移动端抽屉状态
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
   // 切换对话
   const handleSelectConversation = (conversation: typeof exampleConversations[0]) => {
     setActiveConversation(conversation);
     navigate(`/chat/${conversation.id}`);
-    if (isMobile) {
-      setIsDrawerOpen(false);
-    }
   };
 
   // 导航处理函数
@@ -56,29 +45,64 @@ export function MainLayout() {
   // 移动端布局
   if (isMobile) {
     return (
-      <MobileLayout>
-        <MobileDrawer
-          isOpen={isDrawerOpen}
-          onOpenChange={setIsDrawerOpen}
-          onHistoryClick={handleHistoryClick}
-          onNewChatClick={handleNewChat}
-          onSettingsClick={handleSettingsClick}
-        >
-          {exampleConversations.map(conv => (
-            <ConversationItem 
-              key={conv.id}
-              title={conv.title}
-              timestamp={conv.timestamp}
-              isActive={conv.id === activeConversation.id}
-              onClick={() => handleSelectConversation(conv)}
-            />
-          ))}
-        </MobileDrawer>
-        
-        {/* 主内容区域 */}
-        <div className="h-full w-full overflow-auto">
-          <Outlet />
-        </div>
+      <MobileLayout
+        title="CardOS"
+        drawer={
+          <div className="flex flex-col h-full">
+            {/* Logo 和品牌 */}
+            <div className="flex items-center justify-center py-4 border-b border-border">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                CardOS
+              </h1>
+            </div>
+            
+            {/* 导航菜单 */}
+            <div className="flex flex-col gap-2 p-4">
+              <Button 
+                variant="ghost"
+                className="justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700"
+                onClick={handleHistoryClick}
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                历史对话
+              </Button>
+              <Button 
+                variant="ghost"
+                className="justify-start text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-medium"
+                onClick={handleNewChat}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                新建对话
+              </Button>
+              <Button 
+                variant="ghost"
+                className="justify-start text-gray-600 hover:bg-gray-100 hover:text-gray-700"
+                onClick={handleSettingsClick}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                设置
+              </Button>
+            </div>
+
+            {/* 分隔线 */}
+            <div className="h-px bg-border" />
+
+            {/* 对话列表 */}
+            <div className="flex-1 overflow-auto">
+              {exampleConversations.map(conv => (
+                <ConversationItem 
+                  key={conv.id}
+                  title={conv.title}
+                  timestamp={conv.timestamp}
+                  isActive={conv.id === activeConversation.id}
+                  onClick={() => handleSelectConversation(conv)}
+                />
+              ))}
+            </div>
+          </div>
+        }
+      >
+        <Outlet />
       </MobileLayout>
     );
   }
