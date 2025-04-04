@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { CardPreviewItem } from '@/components/card/card-preview-item';
-import { cardService } from '@/services/card';
+import { CardPreviewItem } from '@/features/card/components/card-preview-item';
+import { cardService } from '@/features/card/services/card';
 import { SmartCard } from '@/types/smart-card';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/shared/components/ui/card';
 
 export default function CardView() {
   const { cardId } = useParams<{ cardId: string }>();

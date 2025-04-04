@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
+import { Button } from '@/shared/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,9 +7,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../components/ui/card';
-import { ThemeSwitcher } from '../components/theme-switcher';
-import { useThemeStore } from '../store/theme-store';
+} from '@/shared/components/ui/card';
+import { ThemeSettingsPanel } from '@/shared/components/theme/theme-settings-panel';
+import { useThemeStore } from '@/store/theme-store';
 
 export default function SettingsPage() {
   const [apiKey, setApiKey] = useState('');
@@ -108,7 +108,7 @@ export default function SettingsPage() {
         </Card>
         
         <div className="space-y-6">
-          <ThemeSwitcher />
+          <ThemeSettingsPanel />
           
           <Card>
             <CardHeader>

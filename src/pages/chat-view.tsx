@@ -1,7 +1,7 @@
-import { Message } from '@/components/chat/message';
-import { MessageInput } from '@/components/chat/message-input';
-import { MessageList } from '@/components/chat/message-list';
-import { useResponsive } from '@/hooks/use-responsive';
+import { Message } from '@/features/chat/components/message';
+import { MessageInput } from '@/features/chat/components/message-input';
+import { MessageList } from '@/features/chat/components/message-list';
+import { useResponsive } from '@/shared/hooks/use-responsive';
 import { useOutletContext } from 'react-router-dom';
 
 type ContextType = { 

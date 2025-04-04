@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
 
   --radius: 0.625rem;
@@ -69,13 +71,13 @@
   /* 默认主题颜色 - 映射到基础颜色 */
   --color-primary: var(--blue-500);
   --color-primary-foreground: var(--white);
-  
+
   --color-secondary: var(--gray-100);
   --color-secondary-foreground: var(--gray-900);
-  
+
   --color-accent: var(--green-500);
   --color-accent-foreground: var(--white);
-  
+
   --color-background: var(--white);
   --color-foreground: var(--gray-900);
 
@@ -157,13 +159,13 @@
   /* 深色模式基础颜色 */
   --color-primary: var(--blue-400, #60A5FA);
   --color-primary-foreground: var(--black);
-  
+
   --color-secondary: var(--gray-700);
   --color-secondary-foreground: var(--gray-50);
-  
+
   --color-accent: var(--green-400, #34D399);
   --color-accent-foreground: var(--black);
-  
+
   --color-background: var(--gray-900);
   --color-foreground: var(--gray-50);
 
@@ -254,7 +256,6 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    @apply transition-colors duration-200;
   }
   body {
     @apply bg-background text-foreground;
