@@ -6,17 +6,11 @@ import { useLocation } from 'react-router-dom';
 interface SidebarNavProps {
   className?: string;
   isCollapsed?: boolean;
-  onHistoryClick?: () => void;
-  onNewChatClick?: () => void;
-  onSettingsClick?: () => void;
 }
 
 export function SidebarNav({ 
   className, 
-  isCollapsed = false,
-  onHistoryClick,
-  onNewChatClick,
-  onSettingsClick
+  isCollapsed = false
 }: SidebarNavProps) {
   const location = useLocation();
   const { topItems, bottomItems } = useSidebarStore();
@@ -27,22 +21,6 @@ export function SidebarNav({
       return location.pathname === path;
     }
     return location.pathname.startsWith(path);
-  };
-
-  const handleClick = (item: typeof topItems[0]) => {
-    switch (item.id) {
-      case 'history':
-        onHistoryClick?.();
-        break;
-      case 'new-chat':
-        onNewChatClick?.();
-        break;
-      case 'settings':
-        onSettingsClick?.();
-        break;
-      default:
-        item.onClick?.();
-    }
   };
 
   return (
@@ -67,7 +45,7 @@ export function SidebarNav({
                 item.id === 'new-chat' && !isCollapsed && "font-medium",
                 isActive(item.path) && "bg-accent text-accent-foreground"
               )}
-              onClick={() => handleClick(item)}
+              onClick={item.onClick}
               title={item.title}
             >
               <Icon className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
@@ -97,7 +75,7 @@ export function SidebarNav({
                   : "justify-start text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                 isActive(item.path) && "bg-accent text-accent-foreground"
               )}
-              onClick={() => handleClick(item)}
+              onClick={item.onClick}
               title={item.title}
             >
               <Icon className={cn("h-4 w-4", !isCollapsed && "mr-2")} />

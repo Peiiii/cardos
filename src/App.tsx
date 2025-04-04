@@ -2,8 +2,9 @@ import { chatPlugin } from '@/features/chat/plugin';
 import { settingsPlugin } from '@/features/settings/plugin';
 import { PluginManager } from '@/shared/plugins/core/plugin';
 import { useEffect } from 'react';
-import { useRoutes } from 'react-router-dom';
+import { useRoutes, useNavigate } from 'react-router-dom';
 import routes from './routes';
+import { useNavigationStore } from '@/store/navigation-store';
 
 // 插件列表
 const PLUGINS = [
@@ -14,6 +15,17 @@ const PLUGINS = [
 
 // 应用主组件
 export default function App() {
+  const navigate = useNavigate();
+  const targetPath = useNavigationStore(state => state.targetPath);
+
+  // 监听导航状态
+  useEffect(() => {
+    if (targetPath) {
+      navigate(targetPath);
+      useNavigationStore.getState().navigate(null);
+    }
+  }, [targetPath, navigate]);
+
   // 注册所有插件
   useEffect(() => {
     const pluginManager = PluginManager.getInstance();

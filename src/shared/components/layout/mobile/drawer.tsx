@@ -11,9 +11,6 @@ interface DrawerProps {
   children?: ReactNode;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onHistoryClick?: () => void;
-  onNewChatClick?: () => void;
-  onSettingsClick?: () => void;
 }
 
 export function Drawer({
@@ -21,9 +18,6 @@ export function Drawer({
   children,
   isOpen,
   onOpenChange,
-  onHistoryClick,
-  onNewChatClick,
-  onSettingsClick
 }: DrawerProps) {
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -50,9 +44,6 @@ export function Drawer({
           {/* 导航菜单 */}
           <SidebarNav 
             isCollapsed={false}
-            onHistoryClick={onHistoryClick}
-            onNewChatClick={onNewChatClick}
-            onSettingsClick={onSettingsClick}
           />
 
           {/* 分隔线 */}

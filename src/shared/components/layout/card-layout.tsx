@@ -12,7 +12,7 @@ import { Sidebar as DesktopSidebar } from './desktop/sidebar';
 import { MobileLayout } from './mobile/mobile-layout';
 import { Drawer as MobileDrawer } from './mobile/drawer';
 
-import { ConversationItem } from '../../../features/chat/components/conversation-item';
+import { ConversationItem } from '@/features/chat/components/conversation-item';
 import { exampleConversations } from '@/mock/chat-data';
 
 export function CardLayout() {
@@ -34,21 +34,6 @@ export function CardLayout() {
     }
   };
 
-  // 导航处理函数
-  const handleHistoryClick = () => {
-    navigate('/home');
-  };
-
-  // 处理新建对话
-  const handleNewChat = () => {
-    navigate('/chat');
-  };
-  
-  // 设置页面导航
-  const handleSettingsClick = () => {
-    navigate('/settings');
-  };
-
   // 返回聊天界面
   const handleBackToChat = () => {
     navigate('/chat');
@@ -61,9 +46,6 @@ export function CardLayout() {
         <MobileDrawer
           isOpen={isDrawerOpen}
           onOpenChange={setIsDrawerOpen}
-          onHistoryClick={handleHistoryClick}
-          onNewChatClick={handleNewChat}
-          onSettingsClick={handleSettingsClick}
         >
           {exampleConversations.map(conv => (
             <ConversationItem 
@@ -99,11 +81,7 @@ export function CardLayout() {
   // 桌面端布局 - 不包含右侧卡片预览区域
   return (
     <DesktopLayout>
-      <DesktopSidebar
-        onHistoryClick={handleHistoryClick}
-        onNewChatClick={handleNewChat}
-        onSettingsClick={handleSettingsClick}
-      >
+      <DesktopSidebar>
         {exampleConversations.map(conv => (
           <ConversationItem 
             key={conv.id}

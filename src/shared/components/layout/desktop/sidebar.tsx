@@ -8,17 +8,11 @@ import { SidebarHeader } from '../sidebar/sidebar-header';
 interface SidebarProps {
   className?: string;
   children?: ReactNode;
-  onHistoryClick?: () => void;
-  onNewChatClick?: () => void;
-  onSettingsClick?: () => void;
 }
 
 export function Sidebar({ 
   className, 
   children,
-  onHistoryClick,
-  onNewChatClick,
-  onSettingsClick
 }: SidebarProps) {
   const { isCollapsed, toggleCollapsed } = useSidebar();
 
@@ -33,9 +27,6 @@ export function Sidebar({
       <div className="flex flex-col flex-1">
         <SidebarNav 
           isCollapsed={isCollapsed}
-          onHistoryClick={onHistoryClick}
-          onNewChatClick={onNewChatClick}
-          onSettingsClick={onSettingsClick}
         />
 
         <div className="h-px bg-[--color-sidebar-border]" />
