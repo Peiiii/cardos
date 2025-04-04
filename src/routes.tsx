@@ -2,11 +2,11 @@ import { RouteObject, Navigate } from 'react-router-dom';
 
 // 页面组件
 import HomePage from '@/pages/home';
-import CreateCardPage from '@/pages/create-card';
-import SettingsPage from '@/pages/settings';
+import CreateCardPage from '@/features/chat/pages/create-card';
+import SettingsPage from '@/features/settings/pages/settings';
 import NotFoundPage from '@/pages/not-found';
-import ChatView from '@/pages/chat-view';
-import CardView from '@/pages/card-view';
+import ChatView from '@/features/chat/pages/chat-view';
+import CardView from '@/features/card/pages/card-view';
 
 // 布局组件
 import { RootLayout } from '@/shared/components/layout/root-layout';
