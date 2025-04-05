@@ -5,7 +5,7 @@ interface NavigationState {
   navigate: (path: string | null) => void;
 }
 
-export const useNavigationStore = create<NavigationState>((set) => ({
+export const navigationStore = create<NavigationState>((set) => ({
   targetPath: null,
   navigate: (path) => set({ targetPath: path }),
 })); 

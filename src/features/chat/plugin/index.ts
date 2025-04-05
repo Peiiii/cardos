@@ -1,14 +1,14 @@
 import { MessageSquare, Plus } from 'lucide-react';
-import { useSidebarStore } from '@/store/sidebar-store';
-import { useNavigationStore } from '@/store/navigation-store';
+import { sidebarStore } from '@/store/sidebar-store';
+import { navigationStore } from '@/store/navigation-store';
 import { Plugin } from '@/shared/plugins/core/plugin';
 
 export const chatPlugin: Plugin = {
   id: 'chat',
   name: 'Chat Navigation Items',
   register: () => {
-    const store = useSidebarStore.getState();
-    const { navigate } = useNavigationStore.getState();
+    const store = sidebarStore.getState();
+    const { navigate } = navigationStore.getState();
     
     // 历史对话
     store.registerItem({
@@ -33,7 +33,7 @@ export const chatPlugin: Plugin = {
     });
   },
   unregister: () => {
-    const store = useSidebarStore.getState();
+    const store = sidebarStore.getState();
     ['history', 'new-chat'].forEach(id => {
       store.unregisterItem(id);
     });

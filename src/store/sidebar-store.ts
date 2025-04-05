@@ -18,7 +18,7 @@ interface SidebarState {
   unregisterItem: (id: string) => void;
 }
 
-export const useSidebarStore = create<SidebarState>((set) => ({
+export const sidebarStore = create<SidebarState>((set) => ({
   topItems: [],
   bottomItems: [],
   registerItem: (item) => set((state) => ({

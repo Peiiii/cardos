@@ -1,13 +1,13 @@
 import { Sun, Moon } from 'lucide-react';
 import { useThemeStore } from '@/store/theme-store';
-import { useSidebarStore } from '@/store/sidebar-store';
+import { sidebarStore } from '@/store/sidebar-store';
 import { Plugin } from '@/shared/plugins/core/plugin';
 
 export const themePlugin: Plugin = {
   id: 'theme',
   name: 'Theme Switcher',
   register: () => {
-    const store = useSidebarStore.getState();
+    const store = sidebarStore.getState();
     const { mode } = useThemeStore.getState();
     
     // 底部导航项 - 主题切换
@@ -25,7 +25,7 @@ export const themePlugin: Plugin = {
     });
   },
   unregister: () => {
-    const store = useSidebarStore.getState();
+    const store = sidebarStore.getState();
     store.unregisterItem('theme-switcher');
   }
 }; 

@@ -1,6 +1,6 @@
 import { cn } from '@/shared/utils/utils';
 import { Button } from '@/shared/components/ui/button';
-import { useSidebarStore } from '@/store/sidebar-store';
+import { sidebarStore } from '@/store/sidebar-store';
 import { useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
@@ -13,7 +13,7 @@ export function SidebarNav({
   isCollapsed = false
 }: SidebarNavProps) {
   const location = useLocation();
-  const { topItems, bottomItems } = useSidebarStore();
+  const { topItems, bottomItems } = sidebarStore();
 
   // 判断当前路由是否激活
   const isActive = (path: string) => {

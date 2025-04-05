@@ -1,43 +1,31 @@
-import { useState } from 'react';
-import { useResponsive } from '@/shared/hooks/use-responsive';
 import { Button } from '@/shared/components/ui/button';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useResponsive } from '@/shared/hooks/use-responsive';
 import { X } from 'lucide-react';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
 // 桌面端组件
 import { DesktopLayout } from './desktop/desktop-layout';
 import { Sidebar as DesktopSidebar } from './desktop/sidebar';
 
 // 移动端组件
-import { MobileLayout } from './mobile/mobile-layout';
 import { Drawer as MobileDrawer } from './mobile/drawer';
+import { MobileLayout } from './mobile/mobile-layout';
 
-import { ConversationItem } from '@/features/chat/components/conversation-item';
-import { exampleConversations } from '@/mock/chat-data';
+interface CardLayoutProps {
+  sidebarContent?: React.ReactNode;
+  headerContent?: React.ReactNode;
+  onBack?: () => void;
+}
 
-export function CardLayout() {
+export function CardLayout({ 
+  sidebarContent,
+  onBack 
+}: CardLayoutProps) {
   const { isMobile } = useResponsive();
-  const navigate = useNavigate();
-  
-  // 当前活跃的对话
-  const [activeConversation, setActiveConversation] = useState(exampleConversations[0]);
   
   // 移动端抽屉状态
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
-  // 切换对话
-  const handleSelectConversation = (conversation: typeof exampleConversations[0]) => {
-    setActiveConversation(conversation);
-    navigate(`/chat/${conversation.id}`);
-    if (isMobile) {
-      setIsDrawerOpen(false);
-    }
-  };
-
-  // 返回聊天界面
-  const handleBackToChat = () => {
-    navigate('/chat');
-  };
 
   // 移动端布局
   if (isMobile) {
@@ -47,15 +35,7 @@ export function CardLayout() {
           isOpen={isDrawerOpen}
           onOpenChange={setIsDrawerOpen}
         >
-          {exampleConversations.map(conv => (
-            <ConversationItem 
-              key={conv.id}
-              title={conv.title}
-              timestamp={conv.timestamp}
-              isActive={conv.id === activeConversation.id}
-              onClick={() => handleSelectConversation(conv)}
-            />
-          ))}
+          {sidebarContent}
         </MobileDrawer>
         
         {/* 返回按钮 */}
@@ -63,7 +43,7 @@ export function CardLayout() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleBackToChat}
+            onClick={onBack}
             className="bg-white/80 backdrop-blur-sm shadow-sm"
           >
             <X className="h-5 w-5" />
@@ -82,15 +62,7 @@ export function CardLayout() {
   return (
     <DesktopLayout>
       <DesktopSidebar>
-        {exampleConversations.map(conv => (
-          <ConversationItem 
-            key={conv.id}
-            title={conv.title}
-            timestamp={conv.timestamp}
-            isActive={conv.id === activeConversation.id}
-            onClick={() => handleSelectConversation(conv)}
-          />
-        ))}
+        {sidebarContent}
       </DesktopSidebar>
       
       {/* 卡片详情占据剩余全部空间 */}
