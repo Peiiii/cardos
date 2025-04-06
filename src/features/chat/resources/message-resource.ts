@@ -22,7 +22,7 @@ export const messageResource = createResource<Message[]>(
 );
 
 
-window.messageResource = messageResource;
-window.messageService = messageService;
-window.chatStore = chatStore;
+// window.messageResource = messageResource;
+// window.messageService = messageService;
+// window.chatStore = chatStore;
 

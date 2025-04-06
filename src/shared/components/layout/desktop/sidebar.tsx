@@ -25,17 +25,17 @@ export function Sidebar({
       <SidebarHeader isCollapsed={isCollapsed} onToggle={toggleCollapsed} />
       
       <div className="flex flex-col flex-1">
-        <SidebarNav 
-          isCollapsed={isCollapsed}
-        />
-
-        <div className="h-px bg-[--color-sidebar-border]" />
-
-        {!isCollapsed && (
-          <ConversationList>
-            {children}
-          </ConversationList>
-        )}
+        <SidebarNav.Root isCollapsed={isCollapsed}>
+          <SidebarNav.Top />
+          <SidebarNav.Middle>
+            {!isCollapsed && (
+              <ConversationList>
+                {children}
+              </ConversationList>
+            )}
+          </SidebarNav.Middle>
+          <SidebarNav.Bottom />
+        </SidebarNav.Root>
       </div>
     </div>
   );

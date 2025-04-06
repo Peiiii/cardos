@@ -20,7 +20,6 @@ export function ConversationItem({
   onMenuClick
 }: ConversationItemProps) {
   // 格式化时间
-  console.log('timestamp', timestamp);
   const formattedTime = timestamp ? formatDistanceToNow(new Date(timestamp), { 
     addSuffix: true,
     locale: zhCN 

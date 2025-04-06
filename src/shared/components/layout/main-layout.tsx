@@ -1,32 +1,24 @@
-import { useResponsive } from '@/shared/hooks/use-responsive';
-import { Button } from '@/shared/components/ui/button';
-import { cn } from '@/shared/utils/utils';
+import { useResponsive } from "@/shared/hooks/use-responsive";
 
 // 桌面端组件
-import { DesktopLayout } from './desktop/desktop-layout';
-import { Sidebar as DesktopSidebar } from './desktop/sidebar';
+import { DesktopLayout } from "./desktop/desktop-layout";
+import { Sidebar as DesktopSidebar } from "./desktop/sidebar";
 
 // 移动端组件
-import { MobileLayout } from './mobile/mobile-layout';
+import { ConversationList } from "@/shared/components/layout/shared/conversation-list";
+import { MobileLayout } from "./mobile/mobile-layout";
+import { SidebarContent } from "./shared/sidebar-content";
 
 interface MainLayoutProps {
   children: React.ReactNode;
   title?: string;
-  navigationItems?: {
-    id: string;
-    title: string;
-    icon: React.ReactNode;
-    onClick: () => void;
-    className?: string;
-  }[];
   sidebarContent?: React.ReactNode;
 }
 
-export function MainLayout({ 
+export function MainLayout({
   children,
   title = "CardOS",
-  navigationItems = [],
-  sidebarContent
+  sidebarContent,
 }: MainLayoutProps) {
   const { isMobile } = useResponsive();
 
@@ -35,42 +27,7 @@ export function MainLayout({
     return (
       <MobileLayout
         title={title}
-        drawer={
-          <div className="flex flex-col h-full">
-            {/* Logo 和品牌 */}
-            <div className="flex items-center justify-center py-4 border-b border-border">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                {title}
-              </h1>
-            </div>
-            
-            {/* 导航菜单 */}
-            <div className="flex flex-col gap-2 p-4">
-              {navigationItems.map(item => (
-                <Button 
-                  key={item.id}
-                  variant="ghost"
-                  className={cn(
-                    "justify-start",
-                    item.className
-                  )}
-                  onClick={item.onClick}
-                >
-                  {item.icon}
-                  {item.title}
-                </Button>
-              ))}
-            </div>
-
-            {/* 分隔线 */}
-            <div className="h-px bg-border" />
-
-            {/* 侧边栏内容 */}
-            <div className="flex-1 overflow-auto">
-              {sidebarContent}
-            </div>
-          </div>
-        }
+        drawer={<SidebarContent title={title}>{sidebarContent}</SidebarContent>}
       >
         {children}
       </MobileLayout>
@@ -81,14 +38,11 @@ export function MainLayout({
   return (
     <DesktopLayout>
       <DesktopSidebar>
-        {sidebarContent}
+        <ConversationList />
       </DesktopSidebar>
-      
+
       {/* 主内容区域 */}
-      <div className="flex-1 h-full overflow-auto">
-        {children}
-      </div>
+      <div className="flex-1 h-full overflow-auto">{children}</div>
     </DesktopLayout>
   );
 }
- 

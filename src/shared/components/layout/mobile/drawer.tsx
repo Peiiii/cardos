@@ -1,10 +1,9 @@
-import { ReactNode } from 'react';
-import { cn } from '@/shared/utils/utils';
-import { SidebarNav } from '../sidebar/sidebar-nav';
 import { ConversationList } from '@/features/chat/components/conversation-list';
-import { Sheet, SheetContent } from '@/shared/components/ui/sheet';
 import { Button } from '@/shared/components/ui/button';
+import { Sheet, SheetContent } from '@/shared/components/ui/sheet';
+import { cn } from '@/shared/utils/utils';
 import { X } from 'lucide-react';
+import { ReactNode } from 'react';
 
 interface DrawerProps {
   className?: string;
@@ -42,9 +41,9 @@ export function Drawer({
           </div>
           
           {/* 导航菜单 */}
-          <SidebarNav 
+          {/* <SidebarNav 
             isCollapsed={false}
-          />
+          /> */}
 
           {/* 分隔线 */}
           <div className="h-px bg-border" />

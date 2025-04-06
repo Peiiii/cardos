@@ -21,9 +21,9 @@ export function SidebarHeader({ isCollapsed, onToggle }: SidebarHeaderProps) {
 
       <div className="flex items-center justify-center py-4 border-b border-[--color-sidebar-border] overflow-hidden">
         {isCollapsed ? (
-          <span className="text-xl font-bold text-[--color-sidebar-button-text]">C</span>
+          <span className="text-xl font-bold text-primary">C</span>
         ) : (
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[--color-sidebar-button-text] to-[--color-sidebar-button-hover-text] bg-clip-text text-transparent">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
             CardOS
           </h1>
         )}
