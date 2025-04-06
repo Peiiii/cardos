@@ -3,7 +3,7 @@ import { settingsPlugin } from '@/features/settings/plugin';
 import { PluginManager } from '@/shared/plugins/core/plugin';
 import { useEffect } from 'react';
 import { useRoutes, useNavigate } from 'react-router-dom';
-import routes from './routes';
+import routes from './pages/routes';
 import { navigationStore } from '@/store/navigation-store';
 
 // 插件列表

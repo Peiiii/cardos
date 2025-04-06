@@ -2,7 +2,6 @@ import { Button } from '@/shared/components/ui/button';
 import { useResponsive } from '@/shared/hooks/use-responsive';
 import { X } from 'lucide-react';
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
 
 // 桌面端组件
 import { DesktopLayout } from './desktop/desktop-layout';
@@ -13,12 +12,14 @@ import { Drawer as MobileDrawer } from './mobile/drawer';
 import { MobileLayout } from './mobile/mobile-layout';
 
 interface CardLayoutProps {
+  children: React.ReactNode;
   sidebarContent?: React.ReactNode;
   headerContent?: React.ReactNode;
   onBack?: () => void;
 }
 
 export function CardLayout({ 
+  children,
   sidebarContent,
   onBack 
 }: CardLayoutProps) {
@@ -52,7 +53,7 @@ export function CardLayout({
         
         {/* 渲染子路由内容 - 卡片详情 */}
         <div className="p-0 pt-14 h-full w-full">
-          <Outlet />
+          {children}
         </div>
       </MobileLayout>
     );
@@ -67,7 +68,7 @@ export function CardLayout({
       
       {/* 卡片详情占据剩余全部空间 */}
       <div className="flex-1 h-full overflow-auto">
-        <Outlet />
+        {children}
       </div>
     </DesktopLayout>
   );

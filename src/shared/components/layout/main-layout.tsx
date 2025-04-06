@@ -1,5 +1,4 @@
 import { useResponsive } from '@/shared/hooks/use-responsive';
-import { Outlet } from 'react-router-dom';
 import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/utils/utils';
 
@@ -11,6 +10,7 @@ import { Sidebar as DesktopSidebar } from './desktop/sidebar';
 import { MobileLayout } from './mobile/mobile-layout';
 
 interface MainLayoutProps {
+  children: React.ReactNode;
   title?: string;
   navigationItems?: {
     id: string;
@@ -23,6 +23,7 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ 
+  children,
   title = "CardOS",
   navigationItems = [],
   sidebarContent
@@ -71,7 +72,7 @@ export function MainLayout({
           </div>
         }
       >
-        <Outlet />
+        {children}
       </MobileLayout>
     );
   }
@@ -85,7 +86,7 @@ export function MainLayout({
       
       {/* 主内容区域 */}
       <div className="flex-1 h-full overflow-auto">
-        <Outlet />
+        {children}
       </div>
     </DesktopLayout>
   );

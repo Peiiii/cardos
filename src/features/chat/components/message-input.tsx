@@ -8,9 +8,17 @@ interface MessageInputProps {
   className?: string;
   onSend: (message: string) => void;
   placeholder?: string;
+  isLoading?: boolean;
+  isDisabled?: boolean;
 }
 
-export function MessageInput({ className, onSend, placeholder = "输入消息..." }: MessageInputProps) {
+export function MessageInput({ 
+  className, 
+  onSend, 
+  placeholder = "输入消息...",
+  isLoading = false,
+  isDisabled = false 
+}: MessageInputProps) {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -67,6 +75,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
             size="icon" 
             className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
             title="附件"
+            disabled={isDisabled}
           >
             <Paperclip className="h-4 w-4" />
           </Button>
@@ -75,6 +84,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
             size="icon" 
             className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
             title="表情"
+            disabled={isDisabled}
           >
             <Smile className="h-4 w-4" />
           </Button>
@@ -83,6 +93,7 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
             size="icon" 
             className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
             title="语音"
+            disabled={isDisabled}
           >
             <Mic className="h-4 w-4" />
           </Button>
@@ -92,10 +103,11 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
         <div className="flex gap-2 items-end">
           <Textarea
             ref={textareaRef}
-            placeholder={placeholder}
+            placeholder={isLoading ? "创建对话中..." : placeholder}
             className={cn(
               "min-h-[48px] max-h-[120px] resize-none transition-all duration-200 bg-background/50 border-border focus:border-accent/50 rounded-2xl",
-              isFocused ? "shadow-sm" : ""
+              isFocused ? "shadow-sm" : "",
+              isDisabled && "opacity-50 cursor-not-allowed"
             )}
             rows={1}
             value={message}
@@ -106,15 +118,17 @@ export function MessageInput({ className, onSend, placeholder = "输入消息...
             onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
+            disabled={isDisabled}
           />
           <Button 
             size="icon" 
             className={cn(
               "shrink-0 transition-all duration-300 h-10 w-10 rounded-full",
-              isTyping ? "bg-accent/90 hover:bg-accent text-accent-foreground shadow-sm" : "bg-muted text-muted-foreground"
+              isTyping ? "bg-accent/90 hover:bg-accent text-accent-foreground shadow-sm" : "bg-muted text-muted-foreground",
+              isLoading && "animate-pulse"
             )}
             onClick={handleSendMessage}
-            disabled={!isTyping}
+            disabled={!isTyping || isDisabled}
           >
             <Send className="h-4 w-4" />
           </Button>
