@@ -1,5 +1,6 @@
 import { chatPlugin } from '@/features/chat/plugin';
 import { settingsPlugin } from '@/features/settings/plugin';
+import { cardPlugin } from '@/features/card/plugin';
 import { PluginManager } from '@/shared/plugins/core/plugin';
 import { useEffect } from 'react';
 import { useRoutes, useNavigate } from 'react-router-dom';
@@ -10,6 +11,7 @@ import { navigationStore } from '@/store/navigation-store';
 const PLUGINS = [
   settingsPlugin,
   chatPlugin,
+  cardPlugin,
   // ... 其他插件
 ];
 

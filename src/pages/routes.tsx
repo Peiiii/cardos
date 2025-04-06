@@ -1,4 +1,4 @@
-import { RouteObject, Navigate } from 'react-router-dom';
+import { RouteObject } from 'react-router-dom';
 
 // 页面组件
 import HomePage from '@/pages/home';
@@ -7,6 +7,7 @@ import SettingsPage from '@/features/settings/pages/settings';
 import NotFoundPage from '@/pages/not-found';
 import ChatView from '@/features/chat/pages/chat-view';
 import CardView from '@/features/card/pages/card-view';
+import MyCardsPage from '@/features/card/pages/my-cards';
 
 // 布局提供者
 import { LayoutProvider } from '@/shared/components/layout/layout-provider';
@@ -19,7 +20,7 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <Navigate to="/chat" replace />
+        element: <HomePage />
       },
       // 聊天相关路由
       {
@@ -35,21 +36,21 @@ const routes: RouteObject[] = [
           }
         ]
       },
-      // 卡片详情路由
+      // 卡片相关路由
       {
-        path: 'card/:cardId',
+        path: 'card',
         children: [
           {
-            index: true,
+            path: ':cardId',
             element: <CardView />
           }
         ]
       },
-      // 其他页面路由
       {
-        path: 'home',
-        element: <HomePage />
+        path: 'my-cards',
+        element: <MyCardsPage />
       },
+      // 其他页面路由
       {
         path: 'create',
         element: <CreateCardPage />

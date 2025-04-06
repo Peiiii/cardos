@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/components/ui/card';
+import { PageLayout } from '@/shared/components/layout/page/page-layout';
 
 export default function CreateCardPage() {
   const navigate = useNavigate();
@@ -58,21 +59,13 @@ export default function CreateCardPage() {
   };
 
   return (
-    <>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">创建卡片</h2>
-      
-      {/* 错误提示 */}
-      {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-          <div className="flex">
-            <div className="ml-3">
-              <p className="text-red-700">{error}</p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      <Card>
+    <PageLayout 
+      title="创建卡片" 
+      error={error} 
+      loading={loading}
+      className="p-6"
+    >
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>创建新卡片</CardTitle>
           <CardDescription>填写信息创建一张新的智能卡片</CardDescription>
@@ -124,6 +117,6 @@ export default function CreateCardPage() {
           </CardFooter>
         </form>
       </Card>
-    </>
+    </PageLayout>
   );
 } 

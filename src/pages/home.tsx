@@ -1,107 +1,86 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { cardService } from '@/features/card/services/card';
-import { SmartCard } from '@/types/smart-card';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/shared/components/ui/card';
+import { PageLayout } from '@/shared/components/layout/page/page-layout';
 
 export default function HomePage() {
-  const [cards, setCards] = useState<SmartCard[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // 加载卡片数据
-  useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        setLoading(true);
-        const fetchedCards = await cardService.queryCards();
-        setCards(fetchedCards);
-        setError(null);
-      } catch (err) {
-        console.error('加载卡片失败:', err);
-        setError('加载卡片失败，请稍后再试');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchCards();
-  }, []);
-
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold text-foreground mb-6">我的卡片</h2>
-      
-      {/* 加载状态 */}
-      {loading && (
-        <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-indigo-500 border-t-transparent"></div>
-          <p className="mt-2 text-gray-600">正在加载卡片...</p>
-        </div>
-      )}
-      
-      {/* 错误提示 */}
-      {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-          <div className="flex">
-            <div className="ml-3">
-              <p className="text-red-700">{error}</p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* 卡片列表 */}
-      {!loading && !error && (
-        <>
-          {cards.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cards.map((card) => (
-                <Card key={card.id}>
-                  <CardHeader>
-                    <CardTitle>{card.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div 
-                      className="max-h-36 overflow-hidden" 
-                      dangerouslySetInnerHTML={{ __html: card.htmlContent }} 
-                    />
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      {new Date(card.createdAt).toLocaleDateString()}
-                    </span>
-                    <div className="flex space-x-2">
-                      <Button variant="ghost" size="sm">编辑</Button>
-                      <Button variant="destructive" size="sm">删除</Button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Card className="text-center py-16">
-              <CardHeader>
-                <CardTitle>没有卡片</CardTitle>
-                <CardDescription>开始创建您的第一张智能卡片</CardDescription>
-              </CardHeader>
-              <CardFooter className="flex justify-center">
+    <PageLayout 
+      title="欢迎使用 CardOS" 
+      className="p-6"
+    >
+      <div className="grid gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>开始使用</CardTitle>
+            <CardDescription>创建您的第一张智能卡片，开始您的知识管理之旅</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <h3 className="text-lg font-medium">创建新卡片</h3>
+                  <p className="text-sm text-muted-foreground">
+                    创建一张新的智能卡片，记录您的想法和知识
+                  </p>
+                </div>
                 <Button asChild>
                   <Link to="/create">创建卡片</Link>
                 </Button>
-              </CardFooter>
-            </Card>
-          )}
-        </>
-      )}
-    </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <h3 className="text-lg font-medium">查看我的卡片</h3>
+                  <p className="text-sm text-muted-foreground">
+                    浏览和管理您创建的所有卡片
+                  </p>
+                </div>
+                <Button variant="outline" asChild>
+                  <Link to="/my-cards">查看卡片</Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>功能介绍</CardTitle>
+            <CardDescription>了解 CardOS 的主要功能</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div>
+                <h3 className="text-lg font-medium">智能卡片</h3>
+                <p className="text-sm text-muted-foreground">
+                  使用 Markdown 和 HTML 创建丰富的卡片内容，支持代码高亮、数学公式等
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-medium">知识管理</h3>
+                <p className="text-sm text-muted-foreground">
+                  通过标签和分类管理您的知识，快速找到需要的内容
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-medium">分享协作</h3>
+                <p className="text-sm text-muted-foreground">
+                  分享您的卡片，与团队成员协作，共同构建知识库
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </PageLayout>
   );
 } 
