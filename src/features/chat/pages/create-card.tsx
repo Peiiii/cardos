@@ -100,7 +100,7 @@ export default function CreateCardPage() {
               />
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end space-x-2">
+          <CardFooter className="flex justify-end space-x-2 pt-6">
             <Button
               type="button"
               variant="outline"

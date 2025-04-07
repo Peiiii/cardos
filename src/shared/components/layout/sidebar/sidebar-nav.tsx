@@ -111,7 +111,7 @@ const Bottom = ({ className, children }: SidebarNavSectionProps) => {
   const { bottomItems } = sidebarStore();
 
   return (
-    <div className={cn("mt-auto p-4", className)}>
+    <div className={cn("mt-auto flex flex-col gap-2 p-4", className)}>
       {bottomItems.map((item) => (
         <NavItem key={item.id} item={item} />
       ))}

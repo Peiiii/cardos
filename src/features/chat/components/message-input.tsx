@@ -62,8 +62,8 @@ export function MessageInput({
   return (
     <div 
       className={cn(
-        "p-4 border-t border-border bg-background/95 sticky bottom-0 z-10 transition-all duration-300",
-        isFocused ? "shadow-sm backdrop-blur-sm" : "",
+        "p-4 border-border bg-background/95 sticky bottom-0 z-10 transition-all duration-300",
+        isFocused ? "backdrop-blur-sm" : "",
         className
       )}
     >
