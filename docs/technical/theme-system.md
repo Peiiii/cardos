@@ -2,289 +2,301 @@
 
 ## 概述
 
-CardOS 采用基于 CSS 变量的主题系统，结合 Tailwind CSS 提供灵活且一致的视觉体验。这种方法允许动态主题切换（包括深色模式）同时保持代码简洁和可维护性。
+CardOS 采用基于 CSS 变量的主题系统，支持动态切换多个预定义主题。系统设计遵循以下原则：
 
-## 设计原则
+1. **性能优先**：使用纯 CSS 变量实现主题切换，避免 JavaScript 运行时开销
+2. **无缝切换**：主题切换时无闪烁，提供流畅的用户体验
+3. **易于维护**：主题配置集中管理，便于扩展和修改
+4. **类型安全**：使用 TypeScript 确保主题类型安全
 
-1. **语义化命名**：使用功能性命名而非直接颜色名
-2. **主题一致性**：所有组件遵循统一的主题变量
-3. **可扩展性**：支持多主题和自定义主题
-4. **无缝切换**：在运行时无刷新切换主题
+## 文件组织
 
-## 颜色变量定义
+为了便于维护和扩展，主题文件采用以下组织方式：
 
-### CSS 变量
+```
+src/styles/
+├── themes/
+│   ├── base.css        # 基础变量和通用样式
+│   ├── default.css     # 默认主题
+│   ├── blue.css        # 蓝色主题
+│   ├── green.css       # 绿色主题
+│   ├── purple.css      # 紫色主题
+│   └── index.css       # 主题入口文件
+└── index.css           # 全局样式入口
+```
 
-在根 CSS 文件中定义基础变量：
+### 1. 基础变量 (base.css)
+
+定义所有主题共享的基础变量和通用样式：
 
 ```css
+/* 基础颜色变量 */
 :root {
-  /* 主色调 */
-  --color-primary: #3B82F6;
-  --color-primary-foreground: #FFFFFF;
-  
-  /* 次要色调 */
-  --color-secondary: #F3F4F6;
-  --color-secondary-foreground: #111827;
-  
-  /* 强调色 */
-  --color-accent: #10B981;
-  --color-accent-foreground: #FFFFFF;
-  
-  /* 背景色 */
-  --color-background: #FFFFFF;
-  --color-foreground: #111827;
-  
-  /* 交互状态 */
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
-  --color-info: #3B82F6;
-  
-  /* 边框 */
-  --color-border: #E5E7EB;
-  
-  /* 输入 */
-  --color-input: #F9FAFB;
-  --color-input-foreground: #111827;
-  
-  /* 卡片 */
-  --color-card: #FFFFFF;
-  --color-card-foreground: #111827;
-  
-  /* 消息气泡 */
-  --color-user-message: #DBEAFE;
-  --color-user-message-foreground: #1E40AF;
-  --color-ai-message: #F3F4F6;
-  --color-ai-message-foreground: #111827;
-}
+  /* 中性色 */
+  --neutral-50: oklch(0.98 0 0);
+  --neutral-100: oklch(0.95 0 0);
+  --neutral-200: oklch(0.9 0 0);
+  /* ... 其他中性色 */
 
-.dark {
-  /* 主色调 */
-  --color-primary: #60A5FA;
-  --color-primary-foreground: #000000;
-  
-  /* 次要色调 */
-  --color-secondary: #374151;
-  --color-secondary-foreground: #F9FAFB;
-  
-  /* 强调色 */
-  --color-accent: #34D399;
-  --color-accent-foreground: #000000;
-  
-  /* 背景色 */
-  --color-background: #111827;
-  --color-foreground: #F9FAFB;
-  
-  /* 交互状态 */
-  --color-success: #34D399;
-  --color-warning: #FBBF24;
-  --color-error: #F87171;
-  --color-info: #60A5FA;
-  
-  /* 边框 */
-  --color-border: #374151;
-  
-  /* 输入 */
-  --color-input: #1F2937;
-  --color-input-foreground: #F9FAFB;
-  
-  /* 卡片 */
-  --color-card: #1F2937;
-  --color-card-foreground: #F9FAFB;
-  
-  /* 消息气泡 */
-  --color-user-message: #1E40AF;
-  --color-user-message-foreground: #DBEAFE;
-  --color-ai-message: #374151;
-  --color-ai-message-foreground: #F9FAFB;
+  /* 功能色 */
+  --success: oklch(0.6 0.15 150);
+  --warning: oklch(0.6 0.15 80);
+  --error: oklch(0.6 0.15 30);
+  --info: oklch(0.6 0.15 250);
+
+  /* 通用变量 */
+  --border-radius: 0.5rem;
+  --transition-duration: 200ms;
+  /* ... 其他通用变量 */
 }
 ```
 
-## Tailwind 配置
+### 2. 主题文件 (blue.css)
 
-在 `tailwind.config.js` 中引用 CSS 变量：
+每个主题文件只包含该主题特有的变量：
 
-```js
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
-  darkMode: 'class',
-  theme: {
-    extend: {
-      colors: {
-        // 主题颜色
-        primary: {
-          DEFAULT: 'var(--color-primary)',
-          foreground: 'var(--color-primary-foreground)',
-        },
-        secondary: {
-          DEFAULT: 'var(--color-secondary)',
-          foreground: 'var(--color-secondary-foreground)',
-        },
-        accent: {
-          DEFAULT: 'var(--color-accent)',
-          foreground: 'var(--color-accent-foreground)',
-        },
-        
-        // 基础颜色
-        background: 'var(--color-background)',
-        foreground: 'var(--color-foreground)',
-        
-        // 状态颜色
-        success: 'var(--color-success)',
-        warning: 'var(--color-warning)',
-        error: 'var(--color-error)',
-        info: 'var(--color-info)',
-        
-        // 组件颜色
-        border: 'var(--color-border)',
-        input: {
-          DEFAULT: 'var(--color-input)',
-          foreground: 'var(--color-input-foreground)',
-        },
-        card: {
-          DEFAULT: 'var(--color-card)',
-          foreground: 'var(--color-card-foreground)',
-        },
-        
-        // 消息颜色
-        message: {
-          user: {
-            DEFAULT: 'var(--color-user-message)',
-            foreground: 'var(--color-user-message-foreground)',
-          },
-          ai: {
-            DEFAULT: 'var(--color-ai-message)',
-            foreground: 'var(--color-ai-message-foreground)',
-          },
-        },
-      },
-    },
-  },
-  plugins: [],
-};
+```css
+/* 蓝色主题变量 */
+.theme-blue {
+  /* 主色调 */
+  --primary: oklch(0.6 0.15 250);
+  --primary-foreground: oklch(0.98 0 0);
+  
+  /* 次要色调 */
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: oklch(0.2 0 0);
+  
+  /* 强调色 */
+  --accent: oklch(0.6 0.15 250);
+  --accent-foreground: oklch(0.98 0 0);
+  
+  /* 背景色 */
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.2 0 0);
+  
+  /* 卡片 */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0 0);
+  
+  /* 输入 */
+  --input: oklch(0.95 0 0);
+  --input-foreground: oklch(0.2 0 0);
+  
+  /* 边框 */
+  --border: oklch(0.9 0 0);
+}
 ```
 
-## 使用方法
+### 3. 主题入口文件 (themes/index.css)
 
-### 组件中使用主题颜色
+导入所有主题文件：
 
-```tsx
-// 错误示例 - 硬编码颜色
-<div className="bg-blue-500 text-white">按钮</div>
-
-// 正确示例 - 使用主题颜色
-<div className="bg-primary text-primary-foreground">按钮</div>
+```css
+@import './base.css';
+@import './default.css';
+@import './blue.css';
+@import './green.css';
+@import './purple.css';
 ```
 
-### 状态相关颜色
+### 4. 全局样式入口 (index.css)
 
-```tsx
-// 错误示例
-<div className="bg-red-50 border-l-4 border-red-500 text-red-700">错误消息</div>
+导入主题入口文件：
 
-// 正确示例
-<div className="bg-error/10 border-l-4 border-error text-error">错误消息</div>
+```css
+@import './themes/index.css';
+
+/* 其他全局样式 */
 ```
 
-### 消息气泡
+## 实现方案
 
-```tsx
-// 用户消息
-<div className="bg-message-user text-message-user-foreground">
-  用户消息内容
-</div>
+### 1. 主题变量定义
 
-// AI消息
-<div className="bg-message-ai text-message-ai-foreground">
-  AI回复内容
-</div>
+更新后的主题变量定义方式：
+
+```css
+/* src/styles/themes/base.css */
+:root {
+  /* 基础变量定义 */
+}
+
+/* src/styles/themes/blue.css */
+.theme-blue {
+  /* 蓝色主题变量 */
+}
+
+/* src/styles/themes/green.css */
+.theme-green {
+  /* 绿色主题变量 */
+}
+
+/* src/styles/themes/purple.css */
+.theme-purple {
+  /* 紫色主题变量 */
+}
 ```
 
-## 主题切换
+### 2. 主题类型定义
 
-使用 Zustand 存储管理主题状态：
+在 `src/store/theme-store.ts` 中定义主题类型：
 
-```tsx
-// src/store/theme-store.ts
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-
-type Theme = 'light' | 'dark' | 'system'
+```typescript
+export type ThemeName = 'default' | 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'yellow';
 
 interface ThemeState {
-  theme: Theme
-  setTheme: (theme: Theme) => void
+  mode: ThemeMode;
+  themeName: ThemeName;
+  setMode: (mode: ThemeMode) => void;
+  setThemeName: (themeName: ThemeName) => void;
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: 'system',
-      setTheme: (theme) => set({ theme }),
+      mode: 'system',
+      themeName: 'default',
+      setMode: (mode) => set({ mode }),
+      setThemeName: (themeName) => set({ themeName }),
     }),
     {
       name: 'theme-storage',
     }
   )
-)
+);
 ```
 
-主题提供者组件：
+### 3. 主题提供者
 
-```tsx
-// src/components/theme-provider.tsx
-import { useEffect } from 'react'
-import { useThemeStore } from '../store/theme-store'
+在 `src/shared/components/theme/theme-provider.tsx` 中实现主题切换：
+
+```typescript
+import { useEffect } from 'react';
+import { useThemeStore, ThemeName } from '@/store/theme-store';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const { theme } = useThemeStore()
+  const { mode, themeName } = useThemeStore();
   
+  // 处理显示模式（亮色/暗色）
   useEffect(() => {
-    const root = window.document.documentElement
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
     
-    root.classList.remove('light', 'dark')
-    
-    if (theme === 'system') {
+    if (mode === 'system') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
-        : 'light'
-      root.classList.add(systemTheme)
+        : 'light';
+      root.classList.add(systemTheme);
     } else {
-      root.classList.add(theme)
+      root.classList.add(mode);
     }
-  }, [theme])
+  }, [mode]);
   
-  return <>{children}</>
+  // 处理颜色主题
+  useEffect(() => {
+    const root = window.document.documentElement;
+    
+    // 移除所有主题类
+    const themeNames: ThemeName[] = ['default', 'blue', 'green', 'purple', 'orange', 'red', 'yellow'];
+    themeNames.forEach(name => {
+      root.classList.remove(`theme-${name}`);
+    });
+    
+    // 添加当前主题类
+    root.classList.add(`theme-${themeName}`);
+  }, [themeName]);
+  
+  return <>{children}</>;
+}
+```
+
+## 使用方法
+
+### 1. 组件中使用主题颜色
+
+```tsx
+// 使用主题变量
+<div className="bg-primary text-primary-foreground">
+  使用主题颜色的元素
+</div>
+```
+
+### 2. 切换主题
+
+```tsx
+import { useThemeStore } from '@/store/theme-store';
+
+function ThemeSwitcher() {
+  const { themeName, setThemeName } = useThemeStore();
+  
+  return (
+    <select value={themeName} onChange={(e) => setThemeName(e.target.value as ThemeName)}>
+      <option value="default">默认</option>
+      <option value="blue">蓝色</option>
+      <option value="green">绿色</option>
+      <option value="purple">紫色</option>
+    </select>
+  );
 }
 ```
 
 ## 最佳实践
 
-1. **始终使用语义化类名**，不直接使用颜色名称类（如`bg-blue-500`）
-2. **避免内联样式**定义颜色，使用Tailwind类名
-3. **遵循亮暗模式对比度**确保可访问性
-4. **检查组件在两种模式下**的外观
-5. **使用透明度变体**（如`bg-primary/10`）而非硬编码半透明颜色
-6. **使用调试模式**检查颜色一致性：`localStorage.setItem('debug-colors', 'true')`
+1. **始终使用语义化变量**：
+   - 使用 `bg-primary` 而不是 `bg-blue-500`
+   - 使用 `text-primary-foreground` 而不是 `text-white`
 
-## 迁移指南
+2. **避免硬编码颜色**：
+   ```tsx
+   // 错误示例
+   <div className="bg-blue-500 text-white">
+   
+   // 正确示例
+   <div className="bg-primary text-primary-foreground">
+   ```
 
-将现有代码从硬编码颜色转换为主题系统：
+3. **使用透明度变体**：
+   ```tsx
+   // 错误示例
+   <div className="bg-blue-500/10">
+   
+   // 正确示例
+   <div className="bg-primary/10">
+   ```
 
-| 原始类名 | 主题系统类名 |
-|---------|------------|
-| `bg-blue-500` | `bg-primary` |
-| `text-white` | `text-primary-foreground` |
-| `bg-gray-100` | `bg-secondary` |
-| `text-gray-800` | `text-secondary-foreground` |
-| `bg-green-500` | `bg-success` |
-| `bg-red-500` | `bg-error` |
-| `bg-yellow-500` | `bg-warning` |
-| `border-gray-200` | `border-border` |
-| `bg-white` | `bg-background` |
-| `text-gray-900` | `text-foreground` |
-| `bg-gray-50` | `bg-input` |
-| `text-blue-600` | `text-primary` |
-| `border-blue-100` | `border-primary/20` | 
+4. **保持颜色对比度**：
+   - 确保文本颜色与背景色有足够的对比度
+   - 在亮色和暗色模式下都测试可读性
+
+## 主题扩展
+
+要添加新主题：
+
+1. 在 `ThemeName` 类型中添加新主题名
+2. 创建新的主题文件 `src/styles/themes/[theme-name].css`
+3. 在 `src/styles/themes/index.css` 中导入新主题文件
+
+```typescript
+// 1. 扩展主题类型
+export type ThemeName = 'default' | 'blue' | 'green' | 'purple' | 'new-theme';
+
+// 2. 创建新主题文件 src/styles/themes/new-theme.css
+.theme-new {
+  --primary: oklch(0.6 0.15 200);
+  /* 其他变量... */
+}
+
+// 3. 在 themes/index.css 中导入
+@import './new-theme.css';
+```
+
+## 调试技巧
+
+1. 使用浏览器开发者工具检查 CSS 变量
+2. 临时修改主题变量进行测试：
+   ```css
+   .theme-blue {
+     --primary: red; /* 临时修改进行测试 */
+   }
+   ```
+3. 使用 `localStorage.setItem('debug-theme', 'true')` 启用主题调试模式 

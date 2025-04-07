@@ -50,6 +50,9 @@ export function ThemeSettingsPanel() {
           <ThemeButton name="blue" current={themeName} onClick={setThemeName} />
           <ThemeButton name="green" current={themeName} onClick={setThemeName} />
           <ThemeButton name="purple" current={themeName} onClick={setThemeName} />
+          <ThemeButton name="orange" current={themeName} onClick={setThemeName} />
+          <ThemeButton name="red" current={themeName} onClick={setThemeName} />
+          <ThemeButton name="yellow" current={themeName} onClick={setThemeName} />
         </div>
       </div>
     </div>
@@ -67,16 +70,31 @@ function ThemeButton({
 }) {
   // 主题颜色映射
   const colors: Record<ThemeName, string> = {
-    default: 'bg-blue-500',
-    blue: 'bg-blue-600',
-    green: 'bg-green-600',
-    purple: 'bg-purple-600'
+    default: 'bg-[oklch(0.21_0.006_285.885)]',
+    blue: 'bg-[oklch(0.623_0.214_259.815)]',
+    green: 'bg-[oklch(0.723_0.219_149.579)]',
+    purple: 'bg-[oklch(0.606_0.25_292.717)]',
+    orange: 'bg-[oklch(0.705_0.213_47.604)]',
+    red: 'bg-[oklch(0.637_0.237_25.331)]',
+    yellow: 'bg-[oklch(0.795_0.184_86.047)]'
+  }
+  
+  // 主题名称映射
+  const themeNames: Record<ThemeName, string> = {
+    default: '默认',
+    blue: '蓝色',
+    green: '绿色',
+    purple: '紫色',
+    orange: '橙色',
+    red: '红色',
+    yellow: '黄色'
   }
   
   return (
     <button
       onClick={() => onClick(name)}
-      className={`relative h-12 rounded-md ${current === name ? 'ring-2 ring-primary' : 'ring-1 ring-border'} overflow-hidden`}
+      className={`relative h-12 rounded-md ${current === name ? 'ring-2 ring-primary' : 'ring-1 ring-border'} overflow-hidden group`}
+      title={themeNames[name]}
     >
       <div className={`h-full w-full ${colors[name]}`}></div>
       {current === name && (
@@ -84,6 +102,9 @@ function ThemeButton({
           ✓
         </span>
       )}
+      <span className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {themeNames[name]}
+      </span>
     </button>
   )
 } 

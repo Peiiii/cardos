@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = window.document.documentElement
     
     // 移除所有主题类
-    const themeNames: ThemeName[] = ['default', 'blue', 'green', 'purple']
+    const themeNames: ThemeName[] = ['default', 'blue', 'green', 'purple', 'orange', 'red', 'yellow']
     themeNames.forEach(name => {
       root.classList.remove(`theme-${name}`)
     })

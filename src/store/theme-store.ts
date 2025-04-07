@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
-export type ThemeName = 'default' | 'blue' | 'green' | 'purple'
+export type ThemeName = 'default' | 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'yellow'
 
 interface ThemeState {
   mode: ThemeMode
