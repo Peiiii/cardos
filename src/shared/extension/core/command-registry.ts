@@ -1,4 +1,5 @@
-import { CommandRegistry, Disposable } from '../types';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CommandRegistry, Disposable, TypedKey } from '../types';
 import { DisposableImpl } from './disposable';
 
 /**
@@ -14,11 +15,17 @@ export class CommandRegistryImpl implements CommandRegistry {
 
   /**
    * 注册命令
-   * @param id 命令ID
+   * 支持字符串ID和TypedKey
+   * @param commandId 命令ID或类型安全的命令键
    * @param handler 命令处理器
    * @returns 可释放对象，用于取消注册
    */
-  register<T = any, R = any>(id: string, handler: (arg?: T) => R | Promise<R>): Disposable {
+  registerCommand<T = any, R = any>(
+    commandId: string | TypedKey<(arg?: T) => R | Promise<R>>, 
+    handler: (arg?: T) => R | Promise<R>
+  ): Disposable {
+    const id = typeof commandId === 'string' ? commandId : commandId.name;
+    
     if (this._commands.has(id)) {
       throw new Error(`命令 "${id}" 已经注册`);
     }
@@ -32,11 +39,16 @@ export class CommandRegistryImpl implements CommandRegistry {
 
   /**
    * 执行命令
-   * @param id 命令ID
+   * 支持字符串ID和TypedKey
+   * @param commandId 命令ID或类型安全的命令键
    * @param arg 命令参数
    * @returns 命令执行结果Promise
    */
-  async execute<T = any, R = any>(id: string, arg?: T): Promise<R> {
+  async executeCommand<T = any, R = any>(
+    commandId: string | TypedKey<(arg?: T) => R | Promise<R>>, 
+    arg?: T
+  ): Promise<R> {
+    const id = typeof commandId === 'string' ? commandId : commandId.name;
     const handler = this._commands.get(id) as CommandHandler<T, R> | undefined;
     
     if (!handler) {
@@ -61,10 +73,10 @@ export class CommandRegistryImpl implements CommandRegistry {
   }
 
   /**
-   * 获取所有命令ID
+   * 获取所有已注册命令ID
    * @returns 命令ID数组
    */
-  getCommandIds(): string[] {
+  getCommands(): string[] {
     return Array.from(this._commands.keys());
   }
 
@@ -75,11 +87,3 @@ export class CommandRegistryImpl implements CommandRegistry {
     this._commands.clear();
   }
 }
-
-/**
- * 创建命令注册表
- * @returns 命令注册表实例
- */
-export function createCommandRegistry(): CommandRegistry {
-  return new CommandRegistryImpl();
-} 

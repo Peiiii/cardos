@@ -1,4 +1,5 @@
-import { Disposable, Logger } from '../types';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Logger } from '../types';
 
 /**
  * 日志级别
