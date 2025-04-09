@@ -20,9 +20,6 @@ export function useCards(conversationId: string) {
       onError: (error: Error) => {
         console.error("Card operation failed:", error);
       },
-      onSuccess: (data: Card[]) => {
-        console.log("Card operation succeeded:", data);
-      },
     }
   );
 }

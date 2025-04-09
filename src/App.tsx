@@ -1,14 +1,14 @@
 import { cardExtension } from "@/features/card/extensions";
 import { chatExtension } from "@/features/chat/extensions";
 import { getSettingsExtensions } from "@/features/settings/extensions";
-import { extensionManager } from "@/shared/core";
+import { kernel } from "@/shared/core";
 import { navigationStore } from "@/store/navigation-store";
 import { useEffect } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
 import routes from "./pages/routes";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(window as any).extensionManager = extensionManager;
+(window as any).kernel = kernel;
 
 // 应用主组件
 export default function App() {
@@ -27,16 +27,16 @@ export default function App() {
   useEffect(() => {
     console.log("[App] useEffect");
 
-    extensionManager.registerExtension(cardExtension);
-    extensionManager.registerExtension(chatExtension);
+    kernel.registerExtension(cardExtension);
+    kernel.registerExtension(chatExtension);
     getSettingsExtensions().forEach((extension) => {
-      extensionManager.registerExtension(extension);
+      kernel.registerExtension(extension);
     });
-    extensionManager.activateAllExtensions();
+    kernel.activateAllExtensions();
 
     return () => {
       console.log("[App] useEffect return");
-      extensionManager.dispose();
+      kernel.dispose();
     };
   }, []);
 

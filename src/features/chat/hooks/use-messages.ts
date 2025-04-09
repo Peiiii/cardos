@@ -22,8 +22,5 @@ export function useMessages() {
     onError: (error) => {
       console.error('Message operation failed:', error);
     },
-    onSuccess: (data) => {
-      console.log('Message operation succeeded:', data);
-    }
   });
 }

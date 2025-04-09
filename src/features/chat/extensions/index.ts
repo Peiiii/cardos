@@ -1,8 +1,8 @@
-import { Plugin } from "@/shared/plugin-system/core/plugin";
 import { navigationStore } from "@/store/navigation-store";
 import { sidebarStore } from "@/store/sidebar-store";
-import { Plus } from "lucide-react";
 import { ExtensionDefinition } from "@cardos/extension";
+import { Plus } from "lucide-react";
+
 export const chatExtension: ExtensionDefinition = {
   manifest: {
     id: "chat",

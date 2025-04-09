@@ -30,9 +30,6 @@ export function useConversations() {
     onError: (error) => {
       console.error('Conversation operation failed:', error);
     },
-    onSuccess: (data) => {
-      console.log('Conversation operation succeeded:', data);
-    }
   });
 
   const selectConversation = useCallback((id: string) => {

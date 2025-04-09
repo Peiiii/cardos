@@ -1,20 +1,23 @@
 import { Message } from '@/features/chat/components/message';
 import { MessageInput } from '@/features/chat/components/message-input';
 import { MessageList } from '@/features/chat/components/message-list';
+import { CardPreview } from '@/features/chat/components/card-preview';
 import { useResponsive } from '@/shared/hooks/use-responsive';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMessages } from '../hooks/use-messages';
 import { useConversations } from '../hooks/use-conversations';
 import { chatStore } from '@/store/chat-store';
+import { getChatService } from '../services';
 
 export default function ChatView() {
   const navigate = useNavigate();
   const { conversationId } = useParams();
-  const { data: messages, create: handleSendMessage } = useMessages();
+  const { data: messages, update: updateMessage } = useMessages();
   const { createConversation } = useConversations();
   const { isMobile } = useResponsive();
   const [isCreatingConversation, setIsCreatingConversation] = useState(false);
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
   
   // 同步当前会话ID到store
   useEffect(() => {
@@ -23,39 +26,46 @@ export default function ChatView() {
 
   // 处理发送消息
   const handleMessageSend = async (content: string) => {
-    if (!conversationId) {
-      setIsCreatingConversation(true);
-      try {
+    if (isSendingMessage) return;
+    
+    try {
+      setIsSendingMessage(true);
+      
+      if (!conversationId) {
+        setIsCreatingConversation(true);
         // 1. 创建新对话
         const newConversation = await createConversation({
           title: content.slice(0, 30) + '...', // 使用第一条消息作为标题
           timestamp: Date.now()
         });
-        console.log("newConversation", newConversation);
+        
         // 2. 更新URL
         navigate(`/chat/${newConversation.id}`);
         
         // 3. 发送消息
-        await handleSendMessage({ 
-          content, 
-          conversationId: newConversation.id,
-          isUser: true, 
-          timestamp: Date.now() 
-        });
-      } catch (error) {
-        console.error('创建对话失败:', error);
-        // TODO: 显示错误提示
-      } finally {
-        setIsCreatingConversation(false);
+        await getChatService().sendMessage(
+          content,
+          newConversation.id,
+          (updatedMessage) => {
+            updateMessage(updatedMessage.id, updatedMessage);
+          }
+        );
+      } else {
+        // 直接发送消息
+        await getChatService().sendMessage(
+          content,
+          conversationId,
+          (updatedMessage) => {
+            updateMessage(updatedMessage.id, updatedMessage);
+          }
+        );
       }
-    } else {
-      // 直接发送消息
-      await handleSendMessage({ 
-        content, 
-        conversationId,
-        isUser: true, 
-        timestamp: Date.now() 
-      });
+    } catch (error) {
+      console.error('发送消息失败:', error);
+      // TODO: 显示错误提示
+    } finally {
+      setIsSendingMessage(false);
+      setIsCreatingConversation(false);
     }
   };
 
@@ -79,11 +89,14 @@ export default function ChatView() {
         {/* 输入区域 - 固定在底部 */}
         <div className="flex-shrink-0 border-t border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <MessageInput 
-            isDisabled={isCreatingConversation}
-            isLoading={isCreatingConversation}
+            isDisabled={isCreatingConversation || isSendingMessage}
+            isLoading={isCreatingConversation || isSendingMessage}
             onSend={handleMessageSend}
           />
         </div>
+
+        {/* 卡片预览 */}
+        <CardPreview />
       </div>
     );
   }
@@ -107,12 +120,15 @@ export default function ChatView() {
       <div className="flex-shrink-0 border-t border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-3xl mx-auto px-4">
           <MessageInput 
-            isDisabled={isCreatingConversation}
-            isLoading={isCreatingConversation}
+            isDisabled={isCreatingConversation || isSendingMessage}
+            isLoading={isCreatingConversation || isSendingMessage}
             onSend={handleMessageSend}
           />
         </div>
       </div>
+
+      {/* 卡片预览 */}
+      <CardPreview />
     </div>
   );
 } 

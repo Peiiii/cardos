@@ -1,3 +1,3 @@
 import { ExtensionManager } from '@cardos/extension';
 
-export const extensionManager = new ExtensionManager();
+export const kernel = new ExtensionManager();
