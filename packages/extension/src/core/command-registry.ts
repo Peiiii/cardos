@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CommandRegistry, Disposable, TypedKey } from '../types';
-import { DisposableImpl } from './disposable';
+import { CommandRegistry, IDisposable, TypedKey } from '../types';
+import { Disposable } from './disposable';
 
 /**
  * 命令处理器类型
@@ -23,7 +23,7 @@ export class CommandRegistryImpl implements CommandRegistry {
   registerCommand<T = any, R = any>(
     commandId: string | TypedKey<(arg?: T) => R | Promise<R>>, 
     handler: (arg?: T) => R | Promise<R>
-  ): Disposable {
+  ): IDisposable {
     const id = typeof commandId === 'string' ? commandId : commandId.name;
     
     if (this._commands.has(id)) {
@@ -32,7 +32,7 @@ export class CommandRegistryImpl implements CommandRegistry {
 
     this._commands.set(id, handler);
 
-    return DisposableImpl.from(() => {
+    return Disposable.from(() => {
       this._commands.delete(id);
     });
   }

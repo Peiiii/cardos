@@ -1,4 +1,4 @@
-import { Plugin } from '@/shared/plugins/core/plugin';
+import { Plugin } from '@/shared/plugin-system/core/plugin';
 
 class PluginRegistry {
   private plugins: Map<string, Plugin> = new Map();

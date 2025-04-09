@@ -1,24 +1,19 @@
-import { chatPlugin } from '@/features/chat/plugin';
-import { settingsPlugin } from '@/features/settings/plugin';
-import { cardPlugin } from '@/features/card/plugin';
-import { PluginManager } from '@/shared/plugins/core/plugin';
-import { useEffect } from 'react';
-import { useRoutes, useNavigate } from 'react-router-dom';
-import routes from './pages/routes';
-import { navigationStore } from '@/store/navigation-store';
+import { cardExtension } from "@/features/card/extensions";
+import { chatExtension } from "@/features/chat/extensions";
+import { getSettingsExtensions } from "@/features/settings/extensions";
+import { extensionManager } from "@/shared/core";
+import { navigationStore } from "@/store/navigation-store";
+import { useEffect } from "react";
+import { useNavigate, useRoutes } from "react-router-dom";
+import routes from "./pages/routes";
 
-// 插件列表
-const PLUGINS = [
-  settingsPlugin,
-  chatPlugin,
-  cardPlugin,
-  // ... 其他插件
-];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).extensionManager = extensionManager;
 
 // 应用主组件
 export default function App() {
   const navigate = useNavigate();
-  const targetPath = navigationStore(state => state.targetPath);
+  const targetPath = navigationStore((state) => state.targetPath);
 
   // 监听导航状态
   useEffect(() => {
@@ -30,23 +25,23 @@ export default function App() {
 
   // 注册所有插件
   useEffect(() => {
-    const pluginManager = PluginManager.getInstance();
-    
-    // 注册插件
-    PLUGINS.forEach(plugin => {
-      pluginManager.register(plugin);
+    console.log("[App] useEffect");
+
+    extensionManager.registerExtension(cardExtension);
+    extensionManager.registerExtension(chatExtension);
+    getSettingsExtensions().forEach((extension) => {
+      extensionManager.registerExtension(extension);
     });
-    
+    extensionManager.activateAllExtensions();
+
     return () => {
-      // 注销插件
-      PLUGINS.forEach(plugin => {
-        pluginManager.unregister(plugin.id);
-      });
+      console.log("[App] useEffect return");
+      extensionManager.dispose();
     };
   }, []);
 
   // 使用useRoutes渲染路由配置
   const element = useRoutes(routes);
-  
+
   return element;
 }

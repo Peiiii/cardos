@@ -1,12 +1,17 @@
 import { Sun, Moon } from 'lucide-react';
 import { useThemeStore } from '@/store/theme-store';
 import { sidebarStore } from '@/store/sidebar-store';
-import { Plugin } from '@/shared/plugins/core/plugin';
+import { ExtensionDefinition } from '@cardos/extension';
 
-export const themePlugin: Plugin = {
-  id: 'theme',
-  name: 'Theme Switcher',
-  register: () => {
+export const themeExtension: ExtensionDefinition = {
+  manifest: {
+    id: 'theme',
+    name: 'Theme Switcher',
+    description: 'Theme Switcher',
+    version: '1.0.0',
+    author: 'cardos',
+  },
+  activate: () => {
     const store = sidebarStore.getState();
     const { mode } = useThemeStore.getState();
     
@@ -24,7 +29,7 @@ export const themePlugin: Plugin = {
       }
     });
   },
-  unregister: () => {
+  deactivate: () => {
     const store = sidebarStore.getState();
     store.unregisterItem('theme-switcher');
   }

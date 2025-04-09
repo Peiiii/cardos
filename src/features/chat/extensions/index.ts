@@ -1,12 +1,17 @@
-import { Plugin } from "@/shared/plugins/core/plugin";
+import { Plugin } from "@/shared/plugin-system/core/plugin";
 import { navigationStore } from "@/store/navigation-store";
 import { sidebarStore } from "@/store/sidebar-store";
 import { Plus } from "lucide-react";
-
-export const chatPlugin: Plugin = {
-  id: "chat",
-  name: "Chat Navigation Items",
-  register: () => {
+import { ExtensionDefinition } from "@cardos/extension";
+export const chatExtension: ExtensionDefinition = {
+  manifest: {
+    id: "chat",
+    name: "Chat Navigation Items",
+    description: "Chat Navigation Items",
+    version: "1.0.0",
+    author: "cardos",
+  },
+  activate: () => {
     const store = sidebarStore.getState();
     const { navigate } = navigationStore.getState();
     // 新建对话
@@ -20,7 +25,7 @@ export const chatPlugin: Plugin = {
       onClick: () => navigate("/chat"),
     });
   },
-  unregister: () => {
+  deactivate: () => {
     const store = sidebarStore.getState();
     ["history", "new-chat"].forEach((id) => {
       store.unregisterItem(id);

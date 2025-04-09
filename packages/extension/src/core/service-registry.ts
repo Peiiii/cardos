@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Disposable, ServiceRegistry, TypedKey } from '../types';
-import { DisposableImpl } from './disposable';
+import { IDisposable, ServiceRegistry, TypedKey } from '../types';
+import { Disposable } from './disposable';
 
 /**
  * 服务注册表实现
@@ -18,7 +18,7 @@ export class ServiceRegistryImpl implements ServiceRegistry {
   registerService<T = any>(
     serviceId: string | TypedKey<T>, 
     service: T
-  ): Disposable {
+  ): IDisposable {
     const id = typeof serviceId === 'string' ? serviceId : serviceId.name;
     
     if (this._services.has(id)) {
@@ -27,7 +27,7 @@ export class ServiceRegistryImpl implements ServiceRegistry {
 
     this._services.set(id, service);
 
-    return DisposableImpl.from(() => {
+    return Disposable.from(() => {
       this._services.delete(id);
     });
   }

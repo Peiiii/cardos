@@ -2,29 +2,70 @@
 import { Subject } from "rxjs";
 
 /**
- * 可释放资源接口
- * 
- * 用于管理需要释放的资源，如事件监听器、定时器等。
- * 支持同步和异步释放操作。
+ * 同步可释放资源接口
  */
-export interface Disposable {
-  /**
-   * 释放资源，可以同步或异步执行
-   */
-  dispose(): void | Promise<void>;
+export interface IDisposable {
+  dispose(): void;
+}
+
+/**
+ * 异步可释放资源接口
+ */
+export interface IAsyncDisposable {
+  dispose(): Promise<void>;
+}
+
+/**
+ * 创建一个同步Disposable
+ * @param fn 释放函数
+ */
+export function toDisposable(fn: () => void): IDisposable {
+  return { dispose: fn };
+}
+
+/**
+ * 创建一个异步Disposable
+ * @param fn 异步释放函数
+ */
+export function toAsyncDisposable(fn: () => Promise<void>): IAsyncDisposable {
+  return { dispose: fn };
+}
+
+/**
+ * 组合多个同步Disposable
+ * @param disposables 要组合的Disposable列表
+ */
+export function combinedDisposable(...disposables: IDisposable[]): IDisposable {
+  return toDisposable(() => {
+    for (const disposable of disposables) {
+      disposable.dispose();
+    }
+  });
+}
+
+/**
+ * 组合多个异步Disposable
+ * @param disposables 要组合的AsyncDisposable列表
+ */
+export function combinedAsyncDisposable(...disposables: IAsyncDisposable[]): IAsyncDisposable {
+  return toAsyncDisposable(async () => {
+    await Promise.all(disposables.map(d => d.dispose()));
+  });
 }
 
 /**
  * 基于RxJS的类型安全事件
  * 提供简化的事件API
  */
-export class RxEvent<T> extends Subject<T> implements Disposable {
+export class RxEvent<T> extends Subject<T> implements IDisposable {
+  private _isDisposed = false;
+
   /**
    * 监听事件
    * @param fn 事件处理函数
    * @returns Disposable对象，用于取消监听
    */
-  listen(fn: (value: T) => void): Disposable {
+  listen(fn: (value: T) => void): IDisposable {
     const subscription = this.subscribe(fn);
     return { dispose: () => subscription.unsubscribe() };
   }
@@ -34,16 +75,21 @@ export class RxEvent<T> extends Subject<T> implements Disposable {
    * @param value 事件数据
    */
   fire(value: T): void {
-    this.next(value);
+    if (!this._isDisposed) {
+      this.next(value);
+    }
   }
   
   /**
    * 释放资源
-   * 实现Disposable接口
+   * 实现IDisposable接口
    */
   dispose(): void {
-    this.complete();
-    this.unsubscribe();
+    if (!this._isDisposed) {
+      this._isDisposed = true;
+      this.complete();
+      this.unsubscribe();
+    }
   }
 }
 
@@ -145,7 +191,7 @@ export interface ExtensionLifecycle {
    * @param context 提供给扩展的上下文对象
    * @returns 可选的清理资源对象，或者void
    */
-  activate: (context: ExtensionContext) => Disposable | void | Promise<Disposable | void>;
+  activate: (context: ExtensionContext) => IDisposable | void | Promise<IDisposable | void>;
 
   /**
    * 停用函数
@@ -172,7 +218,7 @@ export interface ExtensionDefinition<T = unknown> {
    * @param context 扩展上下文
    * @returns 可选的扩展API对象或Promise
    */
-  activate(context: ExtensionContext): T | Promise<T>;
+  activate(context: ExtensionContext): T;
   
   /**
    * 停用扩展（可选）
@@ -186,13 +232,13 @@ export interface ExtensionDefinition<T = unknown> {
  * 提供扩展运行时所需的API和资源。
  * 在扩展激活时传递给扩展的activate方法。
  */
-export interface ExtensionContext extends Disposable {
+export interface ExtensionContext extends IAsyncDisposable {
   /** 
    * 订阅列表
    * 用于管理扩展创建的需要释放的资源
    * 扩展被停用时，这些资源会被自动释放
    */
-  readonly subscriptions: Disposable[];
+  readonly subscriptions: IDisposable[];
   
   /** 服务注册表，用于注册和发现服务 */
   readonly serviceRegistry: ServiceRegistry;
@@ -235,14 +281,14 @@ export interface ExtensionContext extends Disposable {
  * 
  * 用于注册和获取服务的接口
  */
-export interface ServiceRegistry extends Disposable {
+export interface ServiceRegistry extends IDisposable {
   /**
    * 注册服务
    * @param serviceId 服务ID或类型安全的服务键
    * @param service 服务实例
    * @returns 用于注销服务的Disposable对象
    */
-  registerService<T = unknown>(serviceId: string | TypedKey<T>, service: T): Disposable;
+  registerService<T = unknown>(serviceId: string | TypedKey<T>, service: T): IDisposable;
   
   /**
    * 获取服务
@@ -263,7 +309,7 @@ export interface ServiceRegistry extends Disposable {
  * 
  * 用于注册和执行命令的接口
  */
-export interface CommandRegistry extends Disposable {
+export interface CommandRegistry extends IDisposable {
   /**
    * 注册命令
    * @param commandId 命令ID或类型安全的命令键
@@ -273,7 +319,7 @@ export interface CommandRegistry extends Disposable {
   registerCommand<T = unknown, R = unknown>(
     commandId: string | TypedKey<(arg?: T) => R | Promise<R>>, 
     handler: (arg?: T) => R | Promise<R>
-  ): Disposable;
+  ): IDisposable;
   
   /**
    * 执行命令
@@ -305,7 +351,7 @@ export interface CommandRegistry extends Disposable {
  * 
  * 用于发布和订阅事件的接口
  */
-export interface EventBus extends Disposable {
+export interface EventBus extends IDisposable {
   // 基于字符串的API
   /**
    * 触发事件
@@ -320,7 +366,7 @@ export interface EventBus extends Disposable {
    * @param handler 事件处理函数
    * @returns 用于取消订阅的Disposable对象
    */
-  on<T>(eventName: string, handler: (data: T) => void): Disposable;
+  on<T>(eventName: string, handler: (data: T) => void): IDisposable;
   
   /**
    * 订阅事件一次
@@ -328,7 +374,7 @@ export interface EventBus extends Disposable {
    * @param handler 事件处理函数
    * @returns 用于取消订阅的Disposable对象
    */
-  once<T>(eventName: string, handler: (data: T) => void): Disposable;
+  once<T>(eventName: string, handler: (data: T) => void): IDisposable;
   
   // 类型安全的TypedKey API
   /**
@@ -344,7 +390,7 @@ export interface EventBus extends Disposable {
    * @param handler 事件处理函数
    * @returns 用于取消订阅的Disposable对象
    */
-  on<T>(key: TypedKey<T>, handler: (data: T) => void): Disposable;
+  on<T>(key: TypedKey<T>, handler: (data: T) => void): IDisposable;
   
   /**
    * 使用类型安全键订阅事件一次
@@ -352,7 +398,7 @@ export interface EventBus extends Disposable {
    * @param handler 事件处理函数
    * @returns 用于取消订阅的Disposable对象
    */
-  once<T>(key: TypedKey<T>, handler: (data: T) => void): Disposable;
+  once<T>(key: TypedKey<T>, handler: (data: T) => void): IDisposable;
 }
 
 /**
@@ -360,7 +406,7 @@ export interface EventBus extends Disposable {
  * 
  * 提供结构化日志记录功能
  */
-export interface Logger extends Disposable {
+export interface Logger extends IDisposable {
   /**
    * 输出调试信息
    * @param message 日志消息
@@ -513,14 +559,14 @@ export interface IExtensionManager {
    * @param extensionName 扩展名称
    * @returns 激活操作的Promise
    */
-  activateExtension(extensionName: string): Promise<void>;
+  activateExtension(extensionName: string): void;
   
   /**
    * 停用扩展
    * @param extensionName 扩展名称
    * @returns 操作完成的Promise
    */
-  deactivateExtension(extensionName: string): Promise<void>;
+  deactivateExtension(extensionName: string): void;
 }
 
 /**
@@ -533,19 +579,19 @@ export interface ExtensionManagerEvents {
    * 扩展加载事件
    * 当扩展被加载到系统时触发
    */
-  readonly onExtensionLoaded: RxEvent<ExtensionDefinition>;
+  readonly onDidExtensionLoaded: RxEvent<ExtensionDefinition>;
   
   /**
    * 扩展激活事件
    * 当扩展被成功激活时触发
    */
-  readonly onExtensionActivated: RxEvent<ExtensionDefinition>;
+  readonly onDidExtensionActivated: RxEvent<ExtensionDefinition>;
   
   /**
    * 扩展停用事件
    * 当扩展被停用时触发
    */
-  readonly onExtensionDeactivated: RxEvent<ExtensionDefinition>;
+  readonly onDidExtensionDeactivated: RxEvent<ExtensionDefinition>;
   
   /**
    * 扩展错误事件

@@ -14,4 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </HashRouter>
     </ThemeProvider>
   </React.StrictMode>
+  // <ThemeProvider>
+  //   <HashRouter>
+  //     <App />
+  //   </HashRouter>
+  // </ThemeProvider>
 );

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MemoryStateStorage } from "@/shared/extension/core/state-storage";
-import { Disposable, ExtensionContext, ExtensionDefinition } from "../types";
+import { MemoryStateStorage } from "./state-storage";
+import { IDisposable, ExtensionContext, ExtensionDefinition } from "../types";
 import { createDisposableCollection } from "./disposable";
 import { ExtensionManager } from "./extension-manager";
 import { createLogger } from "./logger";
@@ -16,7 +16,7 @@ export function createExtensionContext(
   manager: ExtensionManager
 ): ExtensionContext {
   const disposables = createDisposableCollection();
-  const subscriptions: Disposable[] = [];
+  const subscriptions: IDisposable[] = [];
   const serviceRegistry = manager.serviceRegistry;
   const commandRegistry = manager.commandRegistry;
   const eventBus = manager.eventBus;

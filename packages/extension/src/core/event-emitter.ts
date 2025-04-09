@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Disposable, EventBus, TypedKey } from '../types';
-import { DisposableImpl } from './disposable';
+import { IDisposable, EventBus, TypedKey } from '../types';
+import { Disposable } from './disposable';
 
 // 事件处理函数类型
 type EventHandler<T> = (data: T) => void;
@@ -21,7 +21,7 @@ export class EventEmitterImpl implements EventBus {
   on<T = any>(
     eventName: string | TypedKey<T>, 
     handler: EventHandler<T>
-  ): Disposable {
+  ): IDisposable {
     const name = typeof eventName === 'string' ? eventName : eventName.name;
     
     if (!this._listeners.has(name)) {
@@ -31,7 +31,7 @@ export class EventEmitterImpl implements EventBus {
     const handlers = this._listeners.get(name)!;
     handlers.add(handler);
     
-    return DisposableImpl.from(() => {
+    return Disposable.from(() => {
       this._off(name, handler);
     });
   }
@@ -90,7 +90,7 @@ export class EventEmitterImpl implements EventBus {
   once<T = any>(
     eventName: string | TypedKey<T>,
     handler: EventHandler<T>
-  ): Disposable {
+  ): IDisposable {
     const name = typeof eventName === 'string' ? eventName : eventName.name;
     
     const onceHandler = ((data: T) => {

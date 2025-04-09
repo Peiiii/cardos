@@ -1,11 +1,11 @@
-import { Disposable } from '../types';
+import { IAsyncDisposable, IDisposable } from '../types';
 
 /**
  * Disposable 实现类
  * 
  * 提供资源释放的基础实现
  */
-export class DisposableImpl implements Disposable {
+export class Disposable implements IDisposable {
   private _isDisposed: boolean = false;
   private _disposeFn: () => void | Promise<void>;
 
@@ -41,8 +41,8 @@ export class DisposableImpl implements Disposable {
    * @param fn 释放函数
    * @returns Disposable实例
    */
-  static from(fn: () => void | Promise<void>): Disposable {
-    return new DisposableImpl(fn);
+  static from(fn: () => void | Promise<void>): IDisposable {
+    return new Disposable(fn);
   }
 }
 
@@ -51,28 +51,15 @@ export class DisposableImpl implements Disposable {
  * @param disposables 要组合的Disposable列表
  * @returns 组合后的Disposable
  */
-export function combineDisposables(...disposables: Disposable[]): Disposable {
+export function combineDisposables(...disposables: (IDisposable)[]): IDisposable {
   return {
-    async dispose() {
-      // 收集所有的dispose结果，等待所有异步操作完成
-      const promises: Array<void | Promise<void>> = [];
-      
+    dispose() {      
       for (const disposable of disposables) {
         try {
-          const result = disposable.dispose();
-          if (result instanceof Promise) {
-            promises.push(result);
-          }
+          disposable.dispose();
         } catch (error) {
           console.error('Error disposing resource:', error);
         }
-      }
-      
-      // 等待所有异步dispose完成
-      if (promises.length > 0) {
-        await Promise.all(
-          promises.filter(p => p instanceof Promise)
-        );
       }
     }
   };
@@ -83,21 +70,21 @@ export function combineDisposables(...disposables: Disposable[]): Disposable {
  * @returns DisposableCollection实例
  */
 export function createDisposableCollection(): {
-  add: (disposable: Disposable) => void;
-  dispose: () => Promise<void>;
+  add: (disposable: IDisposable) => void;
+  dispose: () => void;
 } {
-  const disposables: Disposable[] = [];
+  const disposables: IDisposable[] = [];
   
   return {
-    add(disposable: Disposable) {
+    add(disposable: IDisposable) {
       disposables.push(disposable);
     },
     
-    async dispose() {
+    dispose() {
       const copyOfDisposables = [...disposables];
       disposables.length = 0;
       
-      await combineDisposables(...copyOfDisposables).dispose();
+      combineDisposables(...copyOfDisposables).dispose();
     }
   };
 } 

@@ -1,5 +1,5 @@
 import {
-  Disposable,
+  IDisposable,
   ExtensionContext,
   ExtensionDefinition,
   ExtensionManifest,
@@ -16,7 +16,7 @@ import { ServiceRegistryImpl } from "./service-registry";
 /**
  * 扩展管理器 - 负责扩展的注册、激活和停用
  */
-export class ExtensionManager implements Disposable, IExtensionManager {
+export class ExtensionManager implements IDisposable, IExtensionManager {
   private _extensions: Map<string, ExtensionDefinition> = new Map();
   private _activatedExtensions: Map<
     string,
@@ -31,9 +31,9 @@ export class ExtensionManager implements Disposable, IExtensionManager {
 
   // 事件
   private _internalEvents: ExtensionManagerEvents = {
-    onExtensionLoaded: new RxEvent<ExtensionDefinition>(),
-    onExtensionActivated: new RxEvent<ExtensionDefinition>(),
-    onExtensionDeactivated: new RxEvent<ExtensionDefinition>(),
+    onDidExtensionLoaded: new RxEvent<ExtensionDefinition>(),
+    onDidExtensionActivated: new RxEvent<ExtensionDefinition>(),
+    onDidExtensionDeactivated: new RxEvent<ExtensionDefinition>(),
     onExtensionError: new RxEvent<{ extension: ExtensionDefinition; error: Error }>()
   };
 
@@ -47,9 +47,9 @@ export class ExtensionManager implements Disposable, IExtensionManager {
     this._disposables.add(this._eventBus);
     
     // 添加事件到释放列表
-    this._disposables.add(this._internalEvents.onExtensionLoaded);
-    this._disposables.add(this._internalEvents.onExtensionActivated);
-    this._disposables.add(this._internalEvents.onExtensionDeactivated);
+    this._disposables.add(this._internalEvents.onDidExtensionLoaded);
+    this._disposables.add(this._internalEvents.onDidExtensionActivated);
+    this._disposables.add(this._internalEvents.onDidExtensionDeactivated);
     this._disposables.add(this._internalEvents.onExtensionError);
   }
 
@@ -92,7 +92,7 @@ export class ExtensionManager implements Disposable, IExtensionManager {
       throw new Error(`扩展 "${id}" 已经注册`);
     }
     this._extensions.set(id, definition);
-    this._internalEvents.onExtensionLoaded.fire(definition);
+    this._internalEvents.onDidExtensionLoaded.fire(definition);
     return id;
   }
 
@@ -157,7 +157,7 @@ export class ExtensionManager implements Disposable, IExtensionManager {
    * @param extensionId 扩展ID
    * @returns 扩展上下文
    */
-  async activateExtension(extensionId: string): Promise<void> {
+  activateExtension(extensionId: string): void {
     if (this._activatedExtensions.has(extensionId)) {
       return;
     }
@@ -172,7 +172,7 @@ export class ExtensionManager implements Disposable, IExtensionManager {
       const context = createExtensionContext(extension, this);
 
       // 调用扩展的激活函数
-      await extension.activate(context);
+      extension.activate(context);
 
       // 更新激活状态
 
@@ -180,7 +180,7 @@ export class ExtensionManager implements Disposable, IExtensionManager {
       this._activatedExtensions.set(extensionId, { extension, context });
 
       // 发出扩展激活事件
-      this._internalEvents.onExtensionActivated.fire(extension);
+      this._internalEvents.onDidExtensionActivated.fire(extension);
 
       return;
     } catch (error) {
@@ -196,7 +196,7 @@ export class ExtensionManager implements Disposable, IExtensionManager {
    * 停用扩展
    * @param extensionId 扩展ID
    */
-  async deactivateExtension(extensionId: string): Promise<void> {
+  deactivateExtension(extensionId: string): void {
     const activatedExtension = this._activatedExtensions.get(extensionId);
     if (!activatedExtension) {
       return; // 扩展未激活，无需停用
@@ -207,17 +207,17 @@ export class ExtensionManager implements Disposable, IExtensionManager {
     try {
       // 调用扩展停用函数
       if (extension.deactivate) {
-        await extension.deactivate();
+        extension.deactivate();
       }
 
       // 释放扩展上下文资源
-      await context.dispose();
+      context.dispose();
 
       // 从激活列表中移除
       this._activatedExtensions.delete(extensionId);
 
       // 发出扩展停用事件
-      this._internalEvents.onExtensionDeactivated.fire(extension);
+      this._internalEvents.onDidExtensionDeactivated.fire(extension);
     } catch (error) {
       // 处理停用错误
       const typedError =
@@ -263,36 +263,28 @@ export class ExtensionManager implements Disposable, IExtensionManager {
   /**
    * 激活所有已注册扩展
    */
-  async activateAllExtensions(): Promise<void> {
-    const promises: Promise<unknown>[] = [];
-
+  activateAllExtensions(): void {
     for (const extensionId of this._extensions.keys()) {
       if (!this._activatedExtensions.has(extensionId)) {
-        promises.push(this.activateExtension(extensionId));
+        this.activateExtension(extensionId);
       }
     }
-
-    await Promise.all(promises);
   }
 
   /**
    * 释放资源
    */
-  async dispose(): Promise<void> {
+  dispose(): void {
     // 停用所有扩展
-    const deactivationPromises: Promise<void>[] = [];
-
     for (const extensionId of this._activatedExtensions.keys()) {
-      deactivationPromises.push(this.deactivateExtension(extensionId));
+      this.deactivateExtension(extensionId);
     }
-
-    await Promise.all(deactivationPromises);
 
     // 清除扩展记录
     this._extensions.clear();
     this._activatedExtensions.clear();
 
     // 释放其他资源
-    await this._disposables.dispose();
+    this._disposables.dispose();
   }
 }
