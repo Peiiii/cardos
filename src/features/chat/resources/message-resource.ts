@@ -1,6 +1,6 @@
 import { messageService } from "@/features/chat/services/message-service";
 import { createResource } from "@/shared/lib/resource";
-import { chatStore } from "@/store/chat-store";
+import { chatStore } from "@/features/chat/stores/chat-store";
 import { Message } from "../types/message";
 
 export const messageResource = createResource<Message[]>(

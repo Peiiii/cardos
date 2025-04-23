@@ -1,6 +1,6 @@
 import { Sun, Moon } from 'lucide-react';
-import { useThemeStore } from '@/store/theme-store';
-import { sidebarStore } from '@/store/sidebar-store';
+import { useThemeStore } from '@/core/stores/theme-store';
+import { sidebarStore } from '@/core/stores/sidebar-store';
 import { ExtensionDefinition } from '@cardos/extension';
 
 export const themeExtension: ExtensionDefinition = {

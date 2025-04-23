@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card } from '@/shared/components/ui/card';
 import { CardPreviewData, CARD_EVENTS } from '../features/ai/plugins/create-edit-card-plugin';
-import { kernel } from '@/shared/core';
+import { kernel } from '@/core/kernel';
 
 export function CardPreview() {
   const [previewData, setPreviewData] = useState<CardPreviewData | null>(null);

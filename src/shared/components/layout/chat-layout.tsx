@@ -14,7 +14,7 @@ import { SidebarContent } from "./shared/sidebar-content";
 import { ConversationList } from "./shared/conversation-list";
 
 import { CardPreviewItem } from "@/features/card/components/card-preview-item";
-import { initialCard } from "@/mock/chat-data";
+import { initialCard } from "@/shared/mock/chat-data";
 import { useCards } from '@/features/card/hooks';
 import { useConversations } from '@/features/chat/hooks/use-conversations';
 

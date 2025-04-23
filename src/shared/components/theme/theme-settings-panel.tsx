@@ -1,4 +1,4 @@
-import { ThemeName, useThemeStore } from '@/store/theme-store'
+import { ThemeName, useThemeStore } from '@/core/stores/theme-store'
 
 export function ThemeSettingsPanel() {
   const { mode, themeName, setMode, setThemeName } = useThemeStore()

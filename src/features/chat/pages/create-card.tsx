@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cardService } from '@/features/card/services/card';
-import { SmartCardCreateParams } from '@/types/smart-card';
+import { SmartCardCreateParams } from '@/shared/types/smart-card';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,

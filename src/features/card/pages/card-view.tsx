@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { CardPreviewItem } from '@/features/card/components/card-preview-item';
 import { cardService } from '@/features/card/services/card';
-import { SmartCard } from '@/types/smart-card';
+import { SmartCard } from '@/shared/types/smart-card';
 import { Card } from '@/shared/components/ui/card';
 
 export default function CardView() {

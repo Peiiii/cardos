@@ -1,7 +1,7 @@
 
 import { FileText, CreditCard } from 'lucide-react';
-import { sidebarStore } from '@/store/sidebar-store';
-import { navigationStore } from '@/store/navigation-store';
+import { sidebarStore } from '@/core/stores/sidebar-store';
+import { navigationStore } from '@/core/stores/navigation-store';
 import { ExtensionDefinition, Disposable } from '@cardos/extension';
 
 export const cardExtension: ExtensionDefinition = {

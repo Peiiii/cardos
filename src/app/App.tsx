@@ -1,11 +1,11 @@
 import { cardExtension } from "@/features/card/extensions";
 import { chatExtension } from "@/features/chat/extensions";
 import { getSettingsExtensions } from "@/features/settings/extensions";
-import { kernel } from "@/shared/core";
-import { navigationStore } from "@/store/navigation-store";
+import { kernel } from '../core/kernel';
+import { navigationStore } from "@/core/stores/navigation-store";
 import { useEffect } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
-import routes from "./pages/routes";
+import routes from "./routes";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).kernel = kernel;
@@ -26,10 +26,7 @@ export default function App() {
   // 注册所有插件
   useEffect(() => {
     console.log("[App] useEffect");
-
-    kernel.registerExtension(cardExtension);
-    kernel.registerExtension(chatExtension);
-    getSettingsExtensions().forEach((extension) => {
+    [cardExtension, chatExtension, ...getSettingsExtensions()].forEach((extension) => {
       kernel.registerExtension(extension);
     });
     kernel.activateAllExtensions();

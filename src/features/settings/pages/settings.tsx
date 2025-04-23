@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/shared/components/ui/card';
 import { ThemeSettingsPanel } from '@/shared/components/theme/theme-settings-panel';
-import { useThemeStore } from '@/store/theme-store';
+import { useThemeStore } from '@/core/stores/theme-store';
 
 export default function SettingsPage() {
   const [apiKey, setApiKey] = useState('');

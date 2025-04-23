@@ -3,7 +3,7 @@ import {
   SmartCardCreateParams,
   SmartCardQueryParams,
   SmartCardUpdateParams,
-} from "@/types/smart-card";
+} from "@/shared/types/smart-card";
 import { cardStorage, CardStorageService } from "./storage";
 
 /**
@@ -266,4 +266,4 @@ export type {
   SmartCardCreateParams,
   SmartCardQueryParams,
   SmartCardUpdateParams,
-} from "@/types/smart-card";
+} from "@/shared/types/smart-card";

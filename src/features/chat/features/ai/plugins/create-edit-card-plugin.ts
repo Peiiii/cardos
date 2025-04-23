@@ -1,7 +1,7 @@
 import { AISystem, Plugin } from "@agentkai/browser";
 import { createTool } from "./utils";
 import { cardService } from "@/features/card/services/card";
-import { kernel } from "@/shared/core";
+import { kernel } from '@/core/kernel';
 
 // 定义事件类型
 export const CARD_EVENTS = {

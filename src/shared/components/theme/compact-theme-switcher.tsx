@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import { useThemeStore } from '@/store/theme-store';
+import { useThemeStore } from '@/core/stores/theme-store';
 import { cn } from '@/shared/utils/utils';
 
 interface CompactThemeSwitcherProps {

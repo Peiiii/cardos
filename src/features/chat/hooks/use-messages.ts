@@ -2,7 +2,7 @@ import { useCRUDResource } from './use-crud-resource';
 import { messageResource } from '../resources/message-resource';
 import { messageService } from '../services/message-service';
 import { Message } from '../types/message';
-import { chatStore } from '@/store/chat-store';
+import { chatStore } from '@/features/chat/stores/chat-store';
 import { CRUDOperations } from './use-crud-resource';
 
 export function useMessages() {

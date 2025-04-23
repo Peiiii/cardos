@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { cardService } from '@/features/card/services/card';
-import { SmartCard } from '@/types/smart-card';
+import { SmartCard } from '@/shared/types/smart-card';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,

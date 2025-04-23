@@ -1,6 +1,6 @@
 import { themeExtension } from '@/features/settings/extensions/theme';
-import { navigationStore } from '@/store/navigation-store';
-import { sidebarStore } from '@/store/sidebar-store';
+import { navigationStore } from '@/core/stores/navigation-store';
+import { sidebarStore } from '@/core/stores/sidebar-store';
 import { ExtensionDefinition } from '@cardos/extension';
 import { Settings } from 'lucide-react';
 

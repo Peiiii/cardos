@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMessages } from '../hooks/use-messages';
 import { useConversations } from '../hooks/use-conversations';
-import { chatStore } from '@/store/chat-store';
+import { chatStore } from '@/features/chat/stores/chat-store';
 import { getChatService } from '../services';
 
 export default function ChatView() {

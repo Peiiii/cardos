@@ -1,9 +1,9 @@
 import { cn } from '@/shared/utils/utils';
 import { Button } from '@/shared/components/ui/button';
-import { sidebarStore } from '@/store/sidebar-store';
+import { sidebarStore } from '@/core/stores/sidebar-store';
 import { useLocation } from 'react-router-dom';
 import { createContext, useContext } from 'react';
-import type { NavItem } from '@/store/sidebar-store';
+import type { NavItem } from '@/core/stores/sidebar-store';
 
 // Context for sharing isCollapsed state
 interface SidebarContext {

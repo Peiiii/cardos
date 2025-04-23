@@ -4,7 +4,7 @@ import {
   SmartCardCreateParams,
   SmartCardQueryParams,
   SmartCardUpdateParams,
-} from "@/types/smart-card";
+} from "@/shared/types/smart-card";
 
 /**
  * 卡片存储服务接口
