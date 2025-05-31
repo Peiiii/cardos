@@ -1,0 +1,7 @@
+export * from "./activity-bar-component"
+export * from "./activity-item"
+export * from "./activity-group"
+export * from "./activity-header-optimized"
+export * from "./activity-bar-context"
+export * from "./configurable-activity-bar"
+export * from "./activity-bar-namespace"

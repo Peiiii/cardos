@@ -207,9 +207,12 @@ export class ExtensionManager implements IDisposable, IExtensionManager {
     try {
       // 调用扩展停用函数
       if (extension.deactivate) {
+        console.log("[ExtensionManager] [deactivateExtension] deactivate [before]", extensionId);
         extension.deactivate();
+        console.log("[ExtensionManager] [deactivateExtension] deactivate [after]", extensionId);
       }
 
+      console.log("[ExtensionManager] [deactivateExtension] dispose [before]", extensionId);
       // 释放扩展上下文资源
       context.dispose();
 

@@ -1,13 +1,11 @@
 import { useResponsive } from "@/shared/hooks/use-responsive";
 
 // 桌面端组件
-import { DesktopLayout } from "./desktop/desktop-layout";
-import { Sidebar as DesktopSidebar } from "./desktop/sidebar";
 
 // 移动端组件
-import { ConversationList } from "@/shared/components/layout/shared/conversation-list";
-import { MobileLayout } from "./mobile/mobile-layout";
-import { SidebarContent } from "./shared/sidebar-content";
+import { WorkspaceActivityBar } from "@/app/layout/workspace-activity-bar";
+import { MobileLayout } from "../../shared/components/layout/mobile/mobile-layout";
+import { SidebarContent } from "../../shared/components/layout/shared/sidebar-content";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -36,13 +34,13 @@ export function MainLayout({
 
   // 桌面端布局
   return (
-    <DesktopLayout>
-      <DesktopSidebar>
+    <>
+      {/* <DesktopSidebar>
         <ConversationList />
-      </DesktopSidebar>
-
+      </DesktopSidebar> */}
+      <WorkspaceActivityBar />
       {/* 主内容区域 */}
       <div className="flex-1 h-full overflow-auto">{children}</div>
-    </DesktopLayout>
+    </>
   );
 }

@@ -12,7 +12,9 @@
     "build:extension": "pnpm --filter @cardos/extension build",
     "buildAndPublish:extension": "pnpm --filter @cardos/extension buildAndPublish",
     "build:key-value-store": "pnpm --filter @cardos/key-value-store build",
-    "buildAndPublish:key-value-store": "pnpm --filter @cardos/key-value-store buildAndPublish"
+    "buildAndPublish:key-value-store": "pnpm --filter @cardos/key-value-store buildAndPublish",
+    "publish:key-value-store": "pnpm --filter @cardos/key-value-store publish --access public --no-git-checks",
+    "release:key-value-store": "pnpm build:key-value-store && pnpm publish:key-value-store"
   },
   "dependencies": {
     "@agentkai/browser": "^3.10.0",

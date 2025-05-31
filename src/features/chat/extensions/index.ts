@@ -1,6 +1,7 @@
 import { navigationStore } from "@/core/stores/navigation-store";
 import { sidebarStore } from "@/core/stores/sidebar-store";
-import { ExtensionDefinition } from "@cardos/extension";
+import { connectRouterWithActivityBar } from "@/core/utils/connect-router-with-activity-bar";
+import { Disposable, ExtensionDefinition } from "@cardos/extension";
 import { Plus } from "lucide-react";
 
 export const chatExtension: ExtensionDefinition = {
@@ -11,11 +12,10 @@ export const chatExtension: ExtensionDefinition = {
     version: "1.0.0",
     author: "cardos",
   },
-  activate: () => {
+  activate: ({ subscriptions }) => {
     const store = sidebarStore.getState();
     const { navigate } = navigationStore.getState();
-    // 新建对话
-    store.registerItem({
+    const newChatId = store.registerItem({
       id: "new-chat",
       title: "新建对话",
       icon: Plus,
@@ -24,11 +24,17 @@ export const chatExtension: ExtensionDefinition = {
       order: 2,
       onClick: () => navigate("/chat"),
     });
-  },
-  deactivate: () => {
-    const store = sidebarStore.getState();
-    ["history", "new-chat"].forEach((id) => {
-      store.unregisterItem(id);
-    });
+    const disconnect = connectRouterWithActivityBar([
+      {
+        activityKey: "new-chat",
+        routerPath: "/chat",
+      },
+    ]);
+    subscriptions.push(
+      Disposable.from(() => {
+        store.unregisterItem(newChatId);
+        disconnect();
+      })
+    );
   },
 };

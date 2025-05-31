@@ -12,7 +12,7 @@ export interface IDisposable {
  * 异步可释放资源接口
  */
 export interface IAsyncDisposable {
-  dispose(): Promise<void>;
+  dispose(): void;
 }
 
 /**

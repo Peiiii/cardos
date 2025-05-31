@@ -58,13 +58,14 @@ export function createExtensionContext(
     storage,
 
     // 释放所有资源
-    async dispose() {
+    dispose() {
+      console.log("[ExtensionContext] [dispose] dispose [before]");
       // 释放所有订阅
       while (subscriptions.length > 0) {
         const disposable = subscriptions.pop();
         if (disposable) {
           try {
-            await Promise.resolve(disposable.dispose());
+            disposable.dispose();
           } catch (error) {
             logger.error("Error disposing subscription", error);
           }
@@ -72,7 +73,8 @@ export function createExtensionContext(
       }
 
       // 释放上下文其他资源
-      await disposables.dispose();
+      disposables.dispose();
+      console.log("[ExtensionContext] [dispose] dispose [after]");
     },
 
     internalEvents: manager.internalEvents,

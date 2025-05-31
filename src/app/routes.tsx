@@ -10,7 +10,7 @@ import CardView from '@/features/card/pages/card-view';
 import MyCardsPage from '@/features/card/pages/my-cards';
 
 // 布局提供者
-import { LayoutProvider } from '@/shared/components/layout/layout-provider';
+import { LayoutProvider } from '@/app/layout/layout-provider';
 
 // 路由配置
 const routes: RouteObject[] = [
