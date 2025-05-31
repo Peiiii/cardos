@@ -3,9 +3,10 @@ import { chatExtension } from "@/features/chat/extensions";
 import { getSettingsExtensions } from "@/features/settings/extensions";
 import { kernel } from '../core/kernel';
 import { navigationStore } from "@/core/stores/navigation-store";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
 import routes from "./routes";
+import { LoadingScreen } from "@/components/loading-screen";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).kernel = kernel;
@@ -40,5 +41,9 @@ export default function App() {
   // 使用useRoutes渲染路由配置
   const element = useRoutes(routes);
 
-  return element;
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      {element}
+    </Suspense>
+  );
 }

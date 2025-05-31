@@ -1,3 +1,4 @@
+import { useConnectKeyValueStorage } from "@/core/hooks/use-connect-key-value-storage";
 import { NavItem, sidebarStore } from "@/core/stores/sidebar-store";
 import { ActivityBar } from "@/shared/components/activity-bar";
 import { LayoutDashboard } from "lucide-react";
@@ -12,6 +13,18 @@ export function WorkspaceActivityBar() {
     setActiveItemKey,
     setCollapsed,
   } = useStore(sidebarStore);
+
+  useConnectKeyValueStorage({
+    key: "activityBar.collapsed",
+    value: collapsed,
+    onChange: setCollapsed,
+  });
+
+  useConnectKeyValueStorage({
+    key: "activityBar.activeItemKey",
+    value: activeItemKey,
+    onChange: setActiveItemKey,
+  });
 
   const renderItem = (item: NavItem) => {
     return (

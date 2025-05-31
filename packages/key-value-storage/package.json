@@ -1,0 +1,35 @@
+{
+  "name": "@cardos/key-value-storage",
+  "version": "0.1.3",
+  "description": "A flexible key-value storage system with multi-level caching support",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm build",
+    "buildAndPublish": "pnpm build && pnpm publish --access public"
+  },
+  "keywords": [
+    "storage",
+    "key-value",
+    "cache",
+    "typescript"
+  ],
+  "author": "Cardos",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
+  }
+} 
