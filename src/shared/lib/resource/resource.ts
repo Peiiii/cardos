@@ -24,6 +24,9 @@ export interface ResourceOptions<T> {
   retryTimes?: number; // 重试次数
   retryDelay?: number; // 重试延迟
   onCreated?: (resource: ResourceManagerImpl<T>) => void; // 资源创建后的回调
+  onSuccess?: (data: T) => void; // 成功回调
+  onError?: (error: Error) => void; // 错误回调
+  initialData?: T; // 初始数据
 }
 
 export interface IResource<T> {
@@ -49,12 +52,17 @@ export class ResourceManagerImpl<T> implements IResource<T> {
   private loadStartTime: number = 0;
   private options: ResourceOptions<T>;
   private promise: Promise<T>;
+  private retryCount: number = 0;
 
   constructor(
     private fetcher: () => Promise<T>,
     options: ResourceOptions<T> = {} as ResourceOptions<T>
   ) {
     this.options = { ...(DEFAULT_OPTIONS as ResourceOptions<T>), ...options };
+    if (options.initialData) {
+      this.state.data = options.initialData;
+      this.state.isLoading = false;
+    }
     this.promise = this.fetcher();
     this.initialize();
   }
@@ -76,14 +84,24 @@ export class ResourceManagerImpl<T> implements IResource<T> {
           isValidating: false,
           error: null,
         });
+        this.options.onSuccess?.(data);
       })
       .catch((error) => {
+        if (this.retryCount < (this.options.retryTimes || 0)) {
+          this.retryCount++;
+          setTimeout(() => {
+            this.promise = this.fetcher();
+            this.initialize();
+          }, this.options.retryDelay);
+          return;
+        }
         this.setState({
           data: null,
           isLoading: false,
           isValidating: false,
           error,
         });
+        this.options.onError?.(error);
       });
   }
 
@@ -118,6 +136,7 @@ export class ResourceManagerImpl<T> implements IResource<T> {
   reload(): Promise<T> {
     this.setState({ isValidating: true, error: null });
     this.loadStartTime = Date.now();
+    this.retryCount = 0;
     // 创建新的 promise 用于 Suspense
     this.promise = this.fetcher();
     return this.promise
@@ -130,10 +149,12 @@ export class ResourceManagerImpl<T> implements IResource<T> {
           );
         }
         this.setState({ data, isValidating: false, error: null });
+        this.options.onSuccess?.(data);
         return data;
       })
       .catch((error) => {
         this.setState({ isValidating: false, error });
+        this.options.onError?.(error);
         throw error;
       });
   }
@@ -224,6 +245,28 @@ export function useResourceState<T>(
   }, [resource]);
 
   return state as ReadyResourceState<T>;
+}
+
+/**
+ * Resource 缓存
+ */
+export const resourceCache = new Map<string, unknown>();
+
+/**
+ * 获取或创建 Resource
+ */
+export function getOrCreateResource<T>(
+  key: string,
+  config: ResourceOptions<T> & { fetcher: () => Promise<T> }
+): ResourceManagerImpl<T> {
+  const existingResource = resourceCache.get(key) as ResourceManagerImpl<T> | undefined;
+  if (existingResource) {
+    return existingResource;
+  }
+
+  const newResource = createResource(config.fetcher, config);
+  resourceCache.set(key, newResource);
+  return newResource;
 }
 
 export function createResource<T>(

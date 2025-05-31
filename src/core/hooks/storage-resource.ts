@@ -4,7 +4,7 @@ import {
   IKeyValueStorageData,
   keyValueStorageService,
 } from "../services/key-value-storage";
-import { getOrCreateResource } from "./resource";
+import { getOrCreateResource } from "@/shared/lib/resource/resource";
 import { useEffect } from "react";
 
 /**
@@ -14,19 +14,19 @@ export function createStorageResource<
   K extends StoragePaths<IKeyValueStorageData>
 >(
   key: K,
-  initialValue: GetStorageValueType<IKeyValueStorageData, K>,
+  value: GetStorageValueType<IKeyValueStorageData, K>,
   onChange: (
     value: NonNullable<GetStorageValueType<IKeyValueStorageData, K>>
   ) => void
 ) {
   return getOrCreateResource(key, {
     fetcher: async () => {
-      const value = await keyValueStorageService.get<K>(key);
-      return value ?? initialValue;
+      const data = await keyValueStorageService.get<K>(key);
+      return data ?? value;
     },
-    initialData: initialValue,
+    initialData: value,
     onSuccess: (data: GetStorageValueType<IKeyValueStorageData, K>) => {
-      if (data !== initialValue && data !== undefined && data !== null) {
+      if (data !== value && data !== undefined && data !== null) {
         onChange(
           data as NonNullable<GetStorageValueType<IKeyValueStorageData, K>>
         );
@@ -48,16 +48,17 @@ export function useStorageResource<
   ) => void
 ) {
   const resource = createStorageResource(key, value, onChange);
-  const { data, loading, error } = resource.getState();
+  const { data, isLoading, isValidating, error } = resource.getState();
+  console.log("data", data, isLoading, isValidating, error);
 
   const update = useMemoizedFn(
-    (value: GetStorageValueType<IKeyValueStorageData, K>) => {
-      resource.update(value);
-      keyValueStorageService.set(key, value);
+    (newValue: GetStorageValueType<IKeyValueStorageData, K>) => {
+      resource.mutate(newValue, false);
+      keyValueStorageService.set(key, newValue);
     }
   );
 
-  if (loading) {
+  if (isLoading || isValidating) {
     throw resource.read();
   }
 
@@ -67,9 +68,9 @@ export function useStorageResource<
 
   useEffect(() => {
     if (value !== undefined && value !== null && data !== value) {
-      update(value);
+      update(value as NonNullable<GetStorageValueType<IKeyValueStorageData, K>>);
     }
-  }, [value, data, update]);
+  }, [value, data, update, key]);
 
   return {
     value: data ?? value,
