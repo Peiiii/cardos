@@ -1,4 +1,3 @@
-import { Card } from "@/features/card/types/card";
 import { useResponsive } from "@/shared/hooks/use-responsive";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -16,6 +15,7 @@ import { CardPreviewItem } from "@/features/card/components/card-preview-item";
 import { useCards } from "@/features/card/hooks";
 import { useConversations } from "@/features/chat/hooks/use-conversations";
 import { initialCard } from "@/shared/mock/chat-data";
+import { SmartCard } from "@/shared/types/smart-card";
 
 interface ChatLayoutProps {
   children: React.ReactNode;
@@ -32,7 +32,7 @@ export function ChatLayout({ children }: ChatLayoutProps) {
 
   // 获取当前卡片数据
   const currentCard =
-    cards?.find((card: Card) => card.id === currentCardId) || initialCard;
+    cards?.find((card: SmartCard) => card.id === currentCardId) || initialCard;
 
   // 移动端布局
   if (isMobile) {
@@ -65,8 +65,8 @@ export function ChatLayout({ children }: ChatLayoutProps) {
       <DesktopCardPreview>
         <CardPreviewItem
           title={currentCard.title}
-          content={currentCard.content}
-          timestamp={currentCard.timestamp}
+          content={currentCard.htmlContent}
+          timestamp={currentCard.createdAt}
         />
       </DesktopCardPreview>
     </>
