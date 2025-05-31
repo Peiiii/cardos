@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { cardService } from '@/features/card/services/card';
-import { SmartCard } from '@/shared/types/smart-card';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCards } from '@/features/card/hooks/use-cards';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -14,34 +12,18 @@ import {
 import { PageLayout } from '@/shared/components/layout/page/page-layout';
 
 export default function MyCardsPage() {
-  const [cards, setCards] = useState<SmartCard[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { data: cards, isLoading, error } = useCards();
 
-  // 加载卡片数据
-  useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        setLoading(true);
-        const fetchedCards = await cardService.queryCards();
-        setCards(fetchedCards);
-        setError(null);
-      } catch (err) {
-        console.error('加载卡片失败:', err);
-        setError('加载卡片失败，请稍后再试');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchCards();
-  }, []);
+  const handleViewCard = (cardId: string) => {
+    navigate(`/card/${cardId}`);
+  };
 
   return (
     <PageLayout 
       title="我的卡片" 
-      error={error} 
-      loading={loading}
+      error={error?.message} 
+      loading={isLoading}
       className="p-6"
     >
       {cards.length > 0 ? (
@@ -62,6 +44,13 @@ export default function MyCardsPage() {
                   {new Date(card.createdAt).toLocaleDateString()}
                 </span>
                 <div className="flex space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleViewCard(card.id)}
+                  >
+                    查看
+                  </Button>
                   <Button variant="ghost" size="sm">编辑</Button>
                   <Button variant="destructive" size="sm">删除</Button>
                 </div>
