@@ -1,6 +1,6 @@
 {
   "name": "@cardos/key-value-store",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A flexible key-value storage system with multi-level caching support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
