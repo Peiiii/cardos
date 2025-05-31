@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IDisposable, EventBus, TypedKey } from '../types';
-import { Disposable } from './disposable';
+import { IDisposable, EventBus, TypedKey } from "../types";
+import { Disposable } from "./disposable";
 
 // 事件处理函数类型
 type EventHandler<T> = (data: T) => void;
@@ -19,18 +19,18 @@ export class EventEmitterImpl implements EventBus {
    * @returns 可释放对象，用于取消订阅
    */
   on<T = any>(
-    eventName: string | TypedKey<T>, 
+    eventName: string | TypedKey<T>,
     handler: EventHandler<T>
   ): IDisposable {
-    const name = typeof eventName === 'string' ? eventName : eventName.name;
-    
+    const name = typeof eventName === "string" ? eventName : eventName.name;
+
     if (!this._listeners.has(name)) {
       this._listeners.set(name, new Set());
     }
-    
+
     const handlers = this._listeners.get(name)!;
     handlers.add(handler);
-    
+
     return Disposable.from(() => {
       this._off(name, handler);
     });
@@ -41,10 +41,7 @@ export class EventEmitterImpl implements EventBus {
    * @param eventName 事件名称
    * @param handler 事件处理函数
    */
-  private _off<T = any>(
-    eventName: string, 
-    handler: EventHandler<T>
-  ): void {
+  private _off<T = any>(eventName: string, handler: EventHandler<T>): void {
     const handlers = this._listeners.get(eventName);
     if (handlers) {
       handlers.delete(handler);
@@ -60,12 +57,9 @@ export class EventEmitterImpl implements EventBus {
    * @param eventName 事件名称或类型安全的事件键
    * @param data 事件数据
    */
-  emit<T = any>(
-    eventName: string | TypedKey<T>, 
-    data: T
-  ): void {
-    const name = typeof eventName === 'string' ? eventName : eventName.name;
-    
+  emit<T = any>(eventName: string | TypedKey<T>, data: T): void {
+    const name = typeof eventName === "string" ? eventName : eventName.name;
+
     const handlers = this._listeners.get(name);
     if (handlers) {
       // 创建副本以防止在迭代过程中修改集合
@@ -91,13 +85,13 @@ export class EventEmitterImpl implements EventBus {
     eventName: string | TypedKey<T>,
     handler: EventHandler<T>
   ): IDisposable {
-    const name = typeof eventName === 'string' ? eventName : eventName.name;
-    
+    const name = typeof eventName === "string" ? eventName : eventName.name;
+
     const onceHandler = ((data: T) => {
       handler(data);
       this._off(name, onceHandler);
     }) as EventHandler<T>;
-    
+
     return this.on(name, onceHandler);
   }
 
@@ -106,7 +100,7 @@ export class EventEmitterImpl implements EventBus {
    * @param eventName 事件名称
    * @returns 是否有监听器
    */
-  private _hasListeners(eventName: string): boolean {
+  hasListeners(eventName: string): boolean {
     const handlers = this._listeners.get(eventName);
     return !!handlers && handlers.size > 0;
   }
@@ -115,7 +109,7 @@ export class EventEmitterImpl implements EventBus {
    * 获取所有已注册的事件名称 (内部方法)
    * @returns 事件名称数组
    */
-  private _getEvents(): string[] {
+  getEvents(): string[] {
     return Array.from(this._listeners.keys());
   }
 

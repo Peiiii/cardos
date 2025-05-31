@@ -1,4 +1,4 @@
-import { IAsyncDisposable, IDisposable } from '../types';
+import { IDisposable } from '../types';
 
 /**
  * Disposable 实现类
