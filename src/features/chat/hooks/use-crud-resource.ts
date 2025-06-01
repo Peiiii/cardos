@@ -25,11 +25,11 @@ export function useCRUDResource<T extends { id: string }>(
   } = {}
 ) {
   const { reload } = resource;
-  const { data, mutate, isLoading, isValidating, error } =
+  const { data, isLoading, isValidating, error } =
     useResourceState(resource);
 
   const optimisticUpdate = useOptimisticUpdate(
-    { data: data as T[], mutate },
+    { data: data as T[], mutate: resource.mutate },
     {
       onChange: options.onSuccess,
     }
@@ -112,7 +112,7 @@ export function useCRUDResource<T extends { id: string }>(
     read,
     update,
     remove,
-    mutate,
+    mutate: resource.mutate,
     reload,
   };
 }

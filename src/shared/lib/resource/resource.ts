@@ -30,8 +30,18 @@ export interface ResourceOptions<T> {
 }
 
 export interface IResource<T> {
+  mutate: (
+    dataOrMutator?:
+      | T
+      | null
+      | ((prev: T | null) => T | null | Promise<T | null>),
+    shouldRevalidate?: boolean
+  ) => Promise<void>;
   read(): ReadyResourceState<T>;
   reload(): Promise<T>;
+  getState(): ResourceState<T>; 
+  subscribe(listener: (state: ResourceState<T>) => void): () => void;
+  whenReady(timeout?: number): Promise<T>;
 }
 
 const DEFAULT_OPTIONS: ResourceOptions<unknown> = {

@@ -9,6 +9,7 @@ export interface CardMetadata {
 export interface Card {
   id: string;
   title: string;
+  conversationId?: string;
   htmlContent: string;
   createdAt: string;
   updatedAt: string;

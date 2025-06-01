@@ -16,7 +16,8 @@ export class CardService {
     const card: CreateCardInput = {
       ...data,
       conversationId,
-      timestamp: Date.now()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     return this.provider.create(card);
   }
