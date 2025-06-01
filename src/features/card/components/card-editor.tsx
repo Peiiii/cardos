@@ -1,50 +1,89 @@
-import { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/shared/components/ui/input';
-import { Textarea } from '@/shared/components/ui/textarea';
+import { Editor } from '@/shared/components/editor';
+import { TitleSuggestion } from './title-suggestion';
 
-interface CardEditorProps {
-  title: string;
-  htmlContent: string;
-  onTitleChange: (title: string) => void;
-  onHtmlContentChange: (content: string) => void;
+export interface CardEditorProps {
+  initialTitle?: string;
+  initialHtmlContent?: string;
+  lastUpdatedAt?: string;
+  isLoading?: boolean;
+  onTitleChange?: (title: string) => void;
+  onHtmlContentChange?: (content: string) => void;
+  showLastUpdated?: boolean;
   className?: string;
 }
 
-export function CardEditor({
-  title,
-  htmlContent,
+export const CardEditor: React.FC<CardEditorProps> = ({
+  initialTitle = '',
+  initialHtmlContent = '',
+  lastUpdatedAt,
+  isLoading = false,
   onTitleChange,
   onHtmlContentChange,
-  className = '',
-}: CardEditorProps) {
-  const editorRef = useRef<HTMLDivElement>(null);
+  showLastUpdated = false,
+  className = ''
+}) => {
+  const [title, setTitle] = useState(initialTitle);
+  const [htmlContent, setHtmlContent] = useState(initialHtmlContent);
+
+  useEffect(() => {
+    setTitle(initialTitle);
+  }, [initialTitle]);
+
+  useEffect(() => {
+    setHtmlContent(initialHtmlContent);
+  }, [initialHtmlContent]);
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    onTitleChange?.(newTitle);
+  };
+
+  const handleTitleSelect = (title: string) => {
+    setTitle(title);
+    onTitleChange?.(title);
+  };  
+
+  const handleHtmlContentChange = (content: string) => {
+    setHtmlContent(content);
+    onHtmlContentChange?.(content);
+  };
 
   return (
-    <div ref={editorRef} className={`flex flex-col h-full ${className} overflow-hidden`}>
-      <div className="p-4 border-b bg-background">
-        <label htmlFor="cardTitle" className="block text-sm font-medium mb-1">
-          卡片标题
-        </label>
-        <Input
-          id="cardTitle"
-          value={title}
-          onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="输入卡片标题"
-          className="w-full"
-        />
+    <div className={`flex flex-col h-full ${className}`}>
+      <div className="flex flex-col p-4 border-b">
+        <div className="flex flex-col gap-1">
+          <Input
+            type="text"
+            value={title}
+            onChange={handleTitleChange}
+            placeholder="输入卡片标题..."
+            className="w-full"
+            disabled={isLoading}
+          />
+          <TitleSuggestion
+            htmlContent={htmlContent}
+            onSelect={handleTitleSelect}
+            maxSuggestions={3}
+            currentTitle={title}
+          />
+        </div>
+        {showLastUpdated && lastUpdatedAt && (
+          <div className="text-xs text-muted-foreground mt-2">
+            最后更新：{new Date(lastUpdatedAt).toLocaleString()}
+          </div>
+        )}
       </div>
-      <div className="flex-grow flex flex-col   p-4 overflow-hidden">
-        <label htmlFor="cardHtmlContent" className="block text-sm font-medium mb-1">
-          HTML 内容
-        </label>
-        <Textarea
-          id="cardHtmlContent"
-          value={htmlContent}
-          onChange={(e) => onHtmlContentChange(e.target.value)}
-          placeholder="输入或粘贴 HTML 代码"
-          className="w-full flex-grow  font-mono text-sm resize-none border rounded-md overflow-y-auto"
+      <div className="flex-1 min-h-0">
+        <Editor
+          initialContent={htmlContent}
+          onChange={handleHtmlContentChange}
+          disabled={isLoading}
+          className="h-full"
         />
       </div>
     </div>
   );
-} 
+}; 

@@ -35,5 +35,6 @@ export function useCard(
     card: data,
     isLoading,
     error,
+    resource
   };
 }

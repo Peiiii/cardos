@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>实时协作绘图</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .drawing-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            cursor: crosshair;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .color-picker {
+            display: flex;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .color-option.active {
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="drawing-container">
+        <h2>实时协作绘图</h2>
+        <canvas id="canvas" width="600" height="400"></canvas>
+        <div class="color-picker">
+            <div class="color-option active" style="background: #000000" onclick="setColor('#000000')"></div>
+            <div class="color-option" style="background: #ff0000" onclick="setColor('#ff0000')"></div>
+            <div class="color-option" style="background: #00ff00" onclick="setColor('#00ff00')"></div>
+            <div class="color-option" style="background: #0000ff" onclick="setColor('#0000ff')"></div>
+        </div>
+        <div class="controls">
+            <button onclick="clearCanvas()">清除</button>
+            <button onclick="undo()">撤销</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let currentColor = '#000000';
+        let lastX = 0;
+        let lastY = 0;
+        let drawingHistory = [];
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', (event) => {
+            const message = event.data;
+            if (message.type === 'parentCommand') {
+                switch (message.commandType) {
+                    case 'updateDisplay':
+                        // 更新画布
+                        const { action, data } = message.payload;
+                        switch (action) {
+                            case 'draw':
+                                drawLine(data.x0, data.y0, data.x1, data.y1, data.color);
+                                break;
+                            case 'clear':
+                                clearCanvas();
+                                break;
+                            case 'undo':
+                                undo();
+                                break;
+                        }
+                        break;
+                }
+            }
+        });
+
+        function setColor(color) {
+            currentColor = color;
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.toggle('active', option.style.background === color);
+            });
+        }
+
+        function drawLine(x0, y0, x1, y1, color) {
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawingHistory = [];
+            sendUpdate('clear');
+        }
+
+        function undo() {
+            if (drawingHistory.length > 0) {
+                drawingHistory.pop();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawingHistory.forEach(line => {
+                    drawLine(line.x0, line.y0, line.x1, line.y1, line.color);
+                });
+                sendUpdate('undo');
+            }
+        }
+
+        function sendUpdate(action, data = {}) {
+            window.parent.postMessage({
+                type: 'cardEvent',
+                metadata: {
+                    version: '1.0',
+                    timestamp: Date.now(),
+                    messageId: crypto.randomUUID()
+                },
+                sourceCardId: 'drawing-card',
+                eventType: 'dataUpdate',
+                payload: { action, ...data }
+            }, '*');
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+            
+            const x = e.offsetX;
+            const y = e.offsetY;
+            
+            drawLine(lastX, lastY, x, y, currentColor);
+            drawingHistory.push({ x0: lastX, y0: lastY, x1: x, y1: y, color: currentColor });
+            
+            sendUpdate('draw', {
+                x0: lastX,
+                y0: lastY,
+                x1: x,
+                y1: y,
+                color: currentColor
+            });
+            
+            [lastX, lastY] = [x, y];
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+        });
+    </script>
+</body>
+</html> 

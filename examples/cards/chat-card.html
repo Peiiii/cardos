@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>实时聊天</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .chat-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        .message.sent {
+            background: #2563eb;
+            color: white;
+            margin-left: auto;
+        }
+        .message.received {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+        .message-input {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #2563eb;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .typing-indicator {
+            color: #6b7280;
+            font-style: italic;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-messages" id="messages"></div>
+        <div class="typing-indicator" id="typingIndicator">对方正在输入...</div>
+        <div class="message-input">
+            <input type="text" id="messageInput" placeholder="输入消息..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+        let typingTimeout;
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', (event) => {
+            const message = event.data;
+            if (message.type === 'parentCommand') {
+                switch (message.commandType) {
+                    case 'updateDisplay':
+                        // 显示新消息
+                        addMessage(message.payload.message, false);
+                        break;
+                    case 'relayEvent':
+                        // 处理其他卡片转发的消息
+                        if (message.payload.type === 'typing') {
+                            showTypingIndicator();
+                        }
+                        break;
+                }
+            }
+        });
+
+        function addMessage(text, isSent) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (text) {
+                addMessage(text, true);
+                messageInput.value = '';
+
+                // 发送消息到父页面
+                window.parent.postMessage({
+                    type: 'cardEvent',
+                    metadata: {
+                        version: '1.0',
+                        timestamp: Date.now(),
+                        messageId: crypto.randomUUID()
+                    },
+                    sourceCardId: 'chat-card',
+                    eventType: 'dataUpdate',
+                    payload: { message: text }
+                }, '*');
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            } else {
+                // 发送正在输入状态
+                window.parent.postMessage({
+                    type: 'cardEvent',
+                    metadata: {
+                        version: '1.0',
+                        timestamp: Date.now(),
+                        messageId: crypto.randomUUID()
+                    },
+                    sourceCardId: 'chat-card',
+                    eventType: 'stateChange',
+                    payload: { type: 'typing' }
+                }, '*');
+            }
+        }
+
+        function showTypingIndicator() {
+            typingIndicator.style.display = 'block';
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                typingIndicator.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html> 

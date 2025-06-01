@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>实时协作计数器</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .counter-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .counter {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2563eb;
+            margin: 20px 0;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .highlight {
+            animation: highlight 1s ease-out;
+        }
+        @keyframes highlight {
+            0% { background: yellow; }
+            100% { background: transparent; }
+        }
+    </style>
+</head>
+<body>
+    <div class="counter-container">
+        <h2>实时协作计数器</h2>
+        <div class="counter" id="counter">0</div>
+        <div class="buttons">
+            <button onclick="decrement()">-</button>
+            <button onclick="increment()">+</button>
+        </div>
+    </div>
+
+    <script>
+        let count = 0;
+        const counterElement = document.getElementById('counter');
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', (event) => {
+            const message = event.data;
+            if (message.type === 'parentCommand') {
+                switch (message.commandType) {
+                    case 'updateDisplay':
+                        count = message.payload.count;
+                        updateDisplay();
+                        break;
+                    case 'highlight':
+                        counterElement.classList.add('highlight');
+                        setTimeout(() => {
+                            counterElement.classList.remove('highlight');
+                        }, 1000);
+                        break;
+                }
+            }
+        });
+
+        function updateDisplay() {
+            counterElement.textContent = count;
+        }
+
+        function increment() {
+            count++;
+            updateDisplay();
+            sendUpdate();
+        }
+
+        function decrement() {
+            count--;
+            updateDisplay();
+            sendUpdate();
+        }
+
+        function sendUpdate() {
+            // 发送数据更新事件到父页面
+            window.parent.postMessage({
+                type: 'cardEvent',
+                metadata: {
+                    version: '1.0',
+                    timestamp: Date.now(),
+                    messageId: crypto.randomUUID()
+                },
+                sourceCardId: 'counter-card',
+                eventType: 'dataUpdate',
+                payload: { count }
+            }, '*');
+        }
+    </script>
+</body>
+</html> 

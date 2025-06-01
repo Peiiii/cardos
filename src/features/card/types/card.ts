@@ -1,9 +1,22 @@
+export interface CardMetadata {
+  tags?: string[];
+  isFavorite?: boolean;
+  author?: string;
+  generatedAt?: number;
+  [key: string]: unknown;
+}
+
 export interface Card {
   id: string;
   title: string;
-  content: string;
-  timestamp: number;
-  conversationId: string;
+  htmlContent: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  tags?: string[];
+  category?: string;
+  status?: 'draft' | 'published' | 'archived';
+  metadata?: CardMetadata;
 }
 
 export type CreateCardInput = Omit<Card, 'id'>;

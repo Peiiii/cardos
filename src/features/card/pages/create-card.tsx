@@ -5,6 +5,13 @@ import { SmartCardCreateParams } from '@/shared/types/smart-card';
 import { PageLayout } from '@/shared/components/layout/page/page-layout';
 import { CardEditorContainer } from '../components/card-editor-container';
 import { linkUtilService } from '@/core/services/link-util.service';
+import { HtmlMetaStrategy } from '../services/title-suggestion/strategies/html-meta-strategy';
+import { ContentAnalysisStrategy } from '../services/title-suggestion/strategies/content-analysis-strategy';
+import { titleSuggestionService } from '../services/title-suggestion.service';
+
+// 注册标题推荐策略
+titleSuggestionService.registerStrategy(new HtmlMetaStrategy());
+titleSuggestionService.registerStrategy(new ContentAnalysisStrategy());
 
 export default function CreateCardPage() {
   const navigate = useNavigate();
@@ -48,6 +55,7 @@ export default function CreateCardPage() {
         onSave={handleSubmit}
         onCancel={() => navigate('/')}
         isSaving={loading}
+        isLoading={loading}
         saveButtonText="创建卡片"
       />
     </PageLayout>

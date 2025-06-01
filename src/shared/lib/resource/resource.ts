@@ -5,13 +5,13 @@ export interface ResourceState<T> {
   isLoading: boolean; // 初始加载状态
   isValidating: boolean; // 刷新状态
   error: Error | null;
-  mutate: (
-    dataOrMutator?:
-      | T
-      | null
-      | ((prev: T | null) => T | null | Promise<T | null>),
-    shouldRevalidate?: boolean
-  ) => Promise<void>;
+  // mutate: (
+  //   dataOrMutator?:
+  //     | T
+  //     | null
+  //     | ((prev: T | null) => T | null | Promise<T | null>),
+  //   shouldRevalidate?: boolean
+  // ) => Promise<void>;
 }
 
 // 添加一个新的类型，用于 read() 返回的状态
@@ -46,7 +46,6 @@ export class ResourceManagerImpl<T> implements IResource<T> {
     isLoading: true,
     isValidating: false,
     error: null,
-    mutate: this.mutate.bind(this),
   };
   private listeners: Set<(state: ResourceState<T>) => void> = new Set();
   private loadStartTime: number = 0;
@@ -110,7 +109,7 @@ export class ResourceManagerImpl<T> implements IResource<T> {
     this.listeners.forEach((listener) => listener(this.state));
   }
 
-  subscribe(listener: (state: ResourceState<T>) => void) {
+  subscribe = (listener: (state: ResourceState<T>) => void) => {
     this.listeners.add(listener);
     listener(this.state);
     return () => {
@@ -118,7 +117,7 @@ export class ResourceManagerImpl<T> implements IResource<T> {
     };
   }
 
-  read(): ReadyResourceState<T> {
+  read=(): ReadyResourceState<T> => {
     if (this.state.error) {
       throw this.state.error;
     }
@@ -129,11 +128,11 @@ export class ResourceManagerImpl<T> implements IResource<T> {
     return this.state as ReadyResourceState<T>;
   }
 
-  getState(): ResourceState<T> {
+  getState=(): ResourceState<T> => {
     return this.state;
   }
 
-  reload(): Promise<T> {
+  reload=(): Promise<T> => {
     this.setState({ isValidating: true, error: null });
     this.loadStartTime = Date.now();
     this.retryCount = 0;
@@ -159,13 +158,13 @@ export class ResourceManagerImpl<T> implements IResource<T> {
       });
   }
 
-  async mutate(
+  mutate=async (
     dataOrMutator?:
       | T
       | null
       | ((prev: T | null) => T | null | Promise<T | null>),
     shouldRevalidate: boolean = true
-  ): Promise<void> {
+  ): Promise<void> => {
     // 如果没有传入数据或函数，直接重新验证
     if (dataOrMutator === undefined) {
       await this.reload();
@@ -195,7 +194,7 @@ export class ResourceManagerImpl<T> implements IResource<T> {
    * @returns 资源数据
    * @throws 如果超时或加载出错
    */
-  async whenReady(timeout: number = 30000): Promise<T> {
+  whenReady=async (timeout: number = 30000): Promise<T> => {
     return new Promise((resolve, reject) => {
       // 如果已经就绪，直接返回数据
       if (!this.state.isLoading && !this.state.error && this.state.data !== null) {
@@ -230,9 +229,9 @@ export class ResourceManagerImpl<T> implements IResource<T> {
 }
 
 // React Hook
-export function useResourceState<T>(
+export const useResourceState= <T>(
   resource: ResourceManagerImpl<T>
-): ReadyResourceState<T> {
+): ReadyResourceState<T> => {
   const [state, setState] = useState<ResourceState<T>>(() => resource.read());
 
   useEffect(() => {
@@ -255,10 +254,10 @@ export const resourceCache = new Map<string, unknown>();
 /**
  * 获取或创建 Resource
  */
-export function getOrCreateResource<T>(
+export const getOrCreateResource= <T>(
   key: string,
   config: ResourceOptions<T> & { fetcher: () => Promise<T> }
-): ResourceManagerImpl<T> {
+): ResourceManagerImpl<T> => {
   const existingResource = resourceCache.get(key) as ResourceManagerImpl<T> | undefined;
   if (existingResource) {
     return existingResource;
@@ -269,10 +268,10 @@ export function getOrCreateResource<T>(
   return newResource;
 }
 
-export function createResource<T>(
+export const createResource= <T>(
   fetcher: () => Promise<T>,
   options?: ResourceOptions<T>
-): ResourceManagerImpl<T> {
+): ResourceManagerImpl<T> => {
   const resource = new ResourceManagerImpl(fetcher, options);
   options?.onCreated?.(resource);
   return resource;
@@ -284,11 +283,11 @@ export function createResource<T>(
  * @param params 资源参数
  * @param fallback 当参数为空时的默认值
  */
-export function useParameterizedResource<T, P>(
+export const useParameterizedResource= <T, P>(
   resourceFactory: (params: P) => ResourceManagerImpl<T>,
   params: P | null,
   fallback: T | (() => T)
-): ReadyResourceState<T> {
+): ReadyResourceState<T> =>   {
   // 创建一个 memo 化的资源实例
   const resource = useMemo(() => {
     if (!params) {
