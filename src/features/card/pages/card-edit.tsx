@@ -65,7 +65,7 @@ export default function CardEditPage() {
         metadata: initialCardData?.metadata || {},
       };
       await cardService.updateCard(cardId, updatedFields);
-      navigate(linkUtilService.pathOfCardView(cardId));
+      // navigate(linkUtilService.pathOfCardView(cardId));
     } catch (err) {
       console.error('Failed to save card:', err);
       setSaveError('保存失败，请重试。');
