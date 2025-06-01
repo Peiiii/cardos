@@ -3,6 +3,7 @@ import { sidebarStore } from "@/core/stores/sidebar-store";
 import { navigationStore } from "@/core/stores/navigation-store";
 import { ExtensionDefinition, Disposable } from "@cardos/extension";
 import { connectRouterWithActivityBar } from "@/core/utils/connect-router-with-activity-bar";
+import { linkUtilService } from "@/core/services/link-util.service";
 
 export const cardExtension: ExtensionDefinition = {
   manifest: {
@@ -24,7 +25,7 @@ export const cardExtension: ExtensionDefinition = {
       path: "/my-cards",
       position: "top",
       order: 1,
-      onClick: () => navigate("/my-cards"),
+      onClick: () => navigate(linkUtilService.pathOfMyCards()),
     });
 
     // 创建卡片
@@ -35,7 +36,7 @@ export const cardExtension: ExtensionDefinition = {
       path: "/create",
       position: "top",
       order: 2,
-      onClick: () => navigate("/create"),
+      onClick: () => navigate(linkUtilService.pathOfCardCreate()),
     });
 
     subscriptions.push(

@@ -8,6 +8,7 @@ import NotFoundPage from '@/app/not-found';
 import ChatView from '@/features/chat/pages/chat-view';
 import CardView from '@/features/card/pages/card-view';
 import MyCardsPage from '@/features/card/pages/my-cards';
+import CardEditPage from '@/features/card/pages/card-edit';
 
 // 布局提供者
 import { LayoutProvider } from '@/app/layout/layout-provider';
@@ -43,6 +44,10 @@ const routes: RouteObject[] = [
           {
             path: ':cardId',
             element: <CardView />
+          },
+          {
+            path: ':cardId/edit',
+            element: <CardEditPage />
           }
         ]
       },

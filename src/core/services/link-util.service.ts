@@ -1,24 +1,42 @@
 export class LinkUtilService {
-  pathOfCards=()=>{
+  // 首页
+  public home(): string {
+    return "/";
+  }
+
+  // 聊天页面
+  public pathOfChat(): string {
+    return "/chat";
+  }
+
+  // 我的卡片列表页面
+  public pathOfMyCards(): string {
     return "/my-cards";
   }
 
-  pathOfCard=(cardId:string)=>{
+  public pathOfCard(cardId: string): string {
     return `/card/${cardId}`;
   }
 
-  pathOfCreateCard=()=>{
+  // 卡片创建页面
+  public pathOfCardCreate(): string {
     return "/create";
   }
+  
+  // 卡片详情页面
+  public pathOfCardView(cardId: string): string {
+    return this.pathOfCard(cardId);
+  }
 
-  pathOfChat=(chatId:string)=>{
-    return `/chat/${chatId}`;
+  // 卡片编辑页面
+  public pathOfCardEdit(cardId: string): string {
+    return `${this.pathOfCard(cardId)}/edit`;
   }
-  
-  pathToHref=(path:string)=>{
-    return `/#${path}`;
+
+  // 设置页面
+  public pathOfSettings(): string {
+    return "/settings";
   }
-  
 }
 
 export const linkUtilService = new LinkUtilService();

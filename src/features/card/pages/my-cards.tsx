@@ -35,9 +35,11 @@ export default function MyCardsPage() {
                 <CardTitle>{card.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div 
-                  className="max-h-36 overflow-hidden" 
-                  dangerouslySetInnerHTML={{ __html: card.htmlContent }} 
+                <iframe
+                  srcDoc={card.htmlContent}
+                  title={card.title}
+                  className="w-full h-full border-0"
+                  sandbox="allow-scripts allow-same-origin" // Adjust sandbox as needed
                 />
               </CardContent>
               <CardFooter className="flex justify-between">

@@ -16,7 +16,7 @@ export function PageLayout({
   className 
 }: PageLayoutProps) {
   return (
-    <div className={className}>
+    <div className={className} data-component="page-layout">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
       </div>
