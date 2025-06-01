@@ -1,4 +1,4 @@
-import { FileText, CreditCard } from "lucide-react";
+import { FileText, CreditCard, Gamepad } from "lucide-react";
 import { sidebarStore } from "@/core/stores/sidebar-store";
 import { navigationStore } from "@/core/stores/navigation-store";
 import { ExtensionDefinition, Disposable } from "@cardos/extension";
@@ -39,10 +39,22 @@ export const cardExtension: ExtensionDefinition = {
       onClick: () => navigate(linkUtilService.pathOfCardCreate()),
     });
 
+    // 卡片游乐场
+    const cardPlaygroundId = store.registerItem({
+      id: "card-playground",
+      title: "卡片游乐场",
+      icon: Gamepad,
+      path: "/card-playground",
+      position: "top",
+      order: 3,
+      onClick: () => navigate(linkUtilService.pathOfCardPlayground()),
+    });
+
     subscriptions.push(
       Disposable.from(() => {
         store.unregisterItem(myCardsId);
         store.unregisterItem(createCardId);
+        store.unregisterItem(cardPlaygroundId);
       })
     );
     const disconnect = connectRouterWithActivityBar([
@@ -54,11 +66,17 @@ export const cardExtension: ExtensionDefinition = {
         activityKey: "create-card",
         routerPath: "/create",
       },
+      {
+        activityKey: "card-playground",
+        routerPath: "/card-playground",
+      },
     ]);
-    subscriptions.push(Disposable.from(() => {
-      store.unregisterItem(myCardsId);
-      store.unregisterItem(createCardId);
-      disconnect();
-    }));
+    subscriptions.push(
+      Disposable.from(() => {
+        store.unregisterItem(myCardsId);
+        store.unregisterItem(createCardId);
+        disconnect();
+      })
+    );
   },
 };

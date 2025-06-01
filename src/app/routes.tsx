@@ -12,6 +12,7 @@ import CardEditPage from '@/features/card/pages/card-edit';
 
 // 布局提供者
 import { LayoutProvider } from '@/app/layout/layout-provider';
+import CardPlaygroundPage from '@/features/card/pages/card-playground';
 
 // 路由配置
 const routes: RouteObject[] = [
@@ -48,8 +49,12 @@ const routes: RouteObject[] = [
           {
             path: ':cardId/edit',
             element: <CardEditPage />
-          }
+          },
         ]
+      },
+      {
+        path: 'card-playground',
+        element: <CardPlaygroundPage />
       },
       {
         path: 'my-cards',

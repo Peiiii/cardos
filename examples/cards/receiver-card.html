@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receiver Card</title>
+    <style>
+        body { font-family: sans-serif; padding: 10px; background-color: #fffde7; }
+        #dataContainer { margin-top: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background-color: #fff; min-height: 50px; }
+        .highlight { background-color: yellow !important; }
+    </style>
+</head>
+<body>
+    <h2>Receiver Card</h2>
+    <p>This card displays messages received from other cards via the parent.</p>
+    <div id="dataContainer">Waiting for data...</div>
+    <div id="status" style="margin-top: 10px; font-style: italic; color: #555;"></div>
+
+    <script>
+        const cardId = 'receiver-card'; // This should be unique
+        const dataContainer = document.getElementById('dataContainer');
+        const statusDiv = document.getElementById('status');
+
+        window.addEventListener('message', (event) => {
+            // Optional: Check event.origin for security
+            // if (event.origin !== 'http://localhost:xxxx') return;
+
+            const message = event.data;
+
+            // Check if it's a command from the parent, potentially relayed from another card
+            if (message && message.type === 'parentCommand') {
+                console.log('Receiver card received command:', message);
+                statusDiv.textContent = 'Received command: ' + message.commandType + ' from ' + (message.originCardId || 'Parent');
+
+                if (message.commandType === 'cardRelayEvent' && message.payload && typeof message.payload.text === 'string') {
+                    // Displaying data relayed from another card
+                    const newContent = document.createElement('p');
+                    // Ensure the template literal is correctly formed and terminated
+                    newContent.textContent = `[${message.payload.timestamp || new Date().toLocaleTimeString()} From ${message.originCardId || 'Unknown'}]: ${message.payload.text}`;
+                    
+                    // Simplified logic for appending content
+                    if (dataContainer.textContent === 'Waiting for data...') {
+                        dataContainer.innerHTML = ''; // Clear initial "Waiting for data..." message
+                    }
+                    dataContainer.appendChild(newContent);
+
+                } else if (message.commandType === 'highlight' && message.payload && typeof message.payload.color === 'string') {
+                    // Highlight command from parent
+                    document.body.style.backgroundColor = message.payload.color;
+                     setTimeout(() => { document.body.style.backgroundColor = '#fffde7'; }, 2000); // Revert after 2s
+                } else if (message.commandType === 'alertMessage' && message.payload && typeof message.payload.message === 'string') {
+                     alert('Message from parent: ' + message.payload.message);
+                }
+            }
+        });
+        statusDiv.textContent = 'Receiver Card Initialized. Listening for messages.';
+    </script>
+</body>
+</html>

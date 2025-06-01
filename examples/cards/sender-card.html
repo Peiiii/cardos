@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sender Card</title>
+    <style>
+        body { font-family: sans-serif; padding: 10px; background-color: #e0f7fa; }
+        button { padding: 10px 15px; font-size: 16px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px; }
+        button:hover { background-color: #0056b3; }
+        #status { margin-top: 10px; font-style: italic; color: #555; }
+    </style>
+</head>
+<body>
+    <h2>Sender Card</h2>
+    <p>Click the button to send data to other cards.</p>
+    <input type="text" id="messageInput" placeholder="Enter message to send" style="padding: 8px; margin-bottom: 10px; width: calc(100% - 22px); border-radius: 3px; border: 1px solid #ccc;">
+    <button id="sendButton">Send Message</button>
+    <div id="status"></div>
+
+    <script>
+        const cardId = 'sender-card'; // This should be unique and match the card's ID in the database
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const statusDiv = document.getElementById('status');
+
+        // Function to send message to parent
+        function sendMessageToParent(eventType, payload) {
+            const message = {
+                type: 'cardEvent',
+                sourceCardId: cardId,
+                eventType: eventType,
+                payload: payload
+            };
+            // IMPORTANT: In a real application, specify the target origin instead of '*'
+            window.parent.postMessage(message, '*');
+            statusDiv.textContent = 'Message sent: ' + JSON.stringify(payload);
+            console.log('Message sent from sender-card:', message);
+        }
+
+        sendButton.addEventListener('click', () => {
+            const messageText = messageInput.value || 'Hello from sender card!';
+            sendMessageToParent('customDataUpdate', { text: messageText, timestamp: new Date().toLocaleTimeString() });
+        });
+
+        // Listen for messages from parent (e.g., acknowledgements or commands)
+        window.addEventListener('message', (event) => {
+            // Optional: Check event.origin for security
+            // if (event.origin !== 'http://localhost:xxxx') return;
+
+            const data = event.data;
+            if (data && data.type === 'parentCommand') {
+                console.log('Sender card received command from parent:', data);
+                statusDiv.textContent = 'Received command: ' + data.commandType + ' - ' + JSON.stringify(data.payload);
+
+                if (data.commandType === 'highlight') {
+                    document.body.style.backgroundColor = data.payload.color || 'transparent';
+                    setTimeout(() => { document.body.style.backgroundColor = '#e0f7fa'; }, 2000); // Revert after 2s
+                }
+                if (data.commandType === 'alertMessage') {
+                    alert('Message from parent: ' + data.payload.message);
+                }
+            }
+        });
+        statusDiv.textContent = 'Sender Card Initialized. Ready to send.';
+    </script>
+</body>
+</html>

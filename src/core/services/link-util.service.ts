@@ -37,6 +37,11 @@ export class LinkUtilService {
   public pathOfSettings(): string {
     return "/settings";
   }
+
+  // 卡片游乐场
+  public pathOfCardPlayground(): string {
+    return "/card-playground";
+  }
 }
 
 export const linkUtilService = new LinkUtilService();
