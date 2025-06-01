@@ -2,7 +2,7 @@ import { RouteObject } from 'react-router-dom';
 
 // 页面组件
 import HomePage from '@/features/home/home';
-import CreateCardPage from '@/features/chat/pages/create-card';
+import CreateCardPage from '@/features/card/pages/create-card';
 import SettingsPage from '@/features/settings/pages/settings';
 import NotFoundPage from '@/app/not-found';
 import ChatView from '@/features/chat/pages/chat-view';

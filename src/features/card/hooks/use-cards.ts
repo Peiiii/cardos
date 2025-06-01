@@ -3,7 +3,10 @@ import { useCRUDResource } from "@/features/chat/hooks/use-crud-resource";
 import { cardService } from "@/features/card/services/card";
 import { SmartCard } from "@/shared/types/smart-card";
 
-export function useCards(conversationId?: string) {
+export function useCards(conversationId?: string, options?: {
+  reload?: boolean;
+}) {
+  const { reload } = options || {};
   return useCRUDResource<SmartCard>(
     cardResource,
     {
@@ -28,6 +31,7 @@ export function useCards(conversationId?: string) {
       onError: (error: Error) => {
         console.error("Card operation failed:", error);
       },
+      reload,
     }
   );
 }

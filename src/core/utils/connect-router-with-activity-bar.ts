@@ -309,7 +309,7 @@ function updateRouterByActivityBar(
   const targetPaths: string[] = [];
   if (route.routerPath) {
     targetPaths.push(route.routerPath);
-  }
+    }
   if (route.routerPaths) {
     targetPaths.push(...route.routerPaths);
   }

@@ -4,6 +4,7 @@ import {
   useResourceState,
 } from "@/shared/lib/resource/resource";
 import { useMemoizedFn } from "ahooks";
+import { useEffect } from "react";
 
 export interface CRUDOperations<T extends { id: string }> {
   create: (item: Omit<T, "id">) => Promise<T>;
@@ -20,6 +21,7 @@ export function useCRUDResource<T extends { id: string }>(
   options: {
     onError?: (error: Error) => void;
     onSuccess?: (data: T[]) => void;
+    reload?: boolean;
   } = {}
 ) {
   const { reload } = resource;
@@ -93,6 +95,12 @@ export function useCRUDResource<T extends { id: string }>(
       throw error;
     }
   });
+
+  useEffect(() => {
+    if (options.reload) {
+      resource.reload();
+    }
+  }, [options.reload, resource]);
 
   return {
     data,

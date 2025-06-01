@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function CardView() {
   const { cardId } = useParams<{ cardId: string }>();
   const navigate = useNavigate();
-  const { card, isLoading, error } = useCard(cardId);
+  const { card, isLoading, error } = useCard(cardId, { reload: true });
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const handleBack = () => {

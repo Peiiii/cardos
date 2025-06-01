@@ -7,7 +7,7 @@ import { EmptyCardList } from '../components/empty-card-list';
 
 export default function MyCardsPage() {
   const navigate = useNavigate();
-  const { data: cards, isLoading, error } = useCards();
+  const { data: cards, isLoading, error } = useCards(undefined, { reload: true });
 
   const handleViewCard = (cardId: string) => {
     navigate(linkUtilService.pathOfCard(cardId));

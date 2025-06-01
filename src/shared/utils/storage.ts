@@ -571,3 +571,4 @@ export const STORAGE_KEYS = {
   THEME_NAME: "theme.themeName" as const,
   ACTIVITY_BAR_EXPANDED: "layout.activityBarExpanded" as const,
 } as const;
+ 
