@@ -10,13 +10,14 @@ import {
   CardTitle,
 } from '@/shared/components/ui/card';
 import { PageLayout } from '@/shared/components/layout/page/page-layout';
+import { linkUtilService } from '@/core/services/link-util.service';
 
 export default function MyCardsPage() {
   const navigate = useNavigate();
   const { data: cards, isLoading, error } = useCards();
 
   const handleViewCard = (cardId: string) => {
-    navigate(`/card/${cardId}`);
+    navigate(linkUtilService.pathOfCard(cardId));
   };
 
   return (

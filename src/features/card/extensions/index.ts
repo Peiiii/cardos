@@ -12,7 +12,6 @@ export const cardExtension: ExtensionDefinition = {
     description: "Card Navigation Items",
   },
   activate: (context) => {
-    console.log("[cardExtension] activate");
     const { subscriptions } = context;
     const store = sidebarStore.getState();
     const { navigate } = navigationStore.getState();
@@ -27,7 +26,6 @@ export const cardExtension: ExtensionDefinition = {
       order: 1,
       onClick: () => navigate("/my-cards"),
     });
-    console.log("[cardExtension] [registerItem] myCardsId", myCardsId);
 
     // 创建卡片
     const createCardId = store.registerItem({
@@ -43,14 +41,13 @@ export const cardExtension: ExtensionDefinition = {
     subscriptions.push(
       Disposable.from(() => {
         store.unregisterItem(myCardsId);
-        console.log("[cardExtension] [unregisterItem] myCardsId", myCardsId);
         store.unregisterItem(createCardId);
       })
     );
     const disconnect = connectRouterWithActivityBar([
       {
         activityKey: "my-cards",
-        routerPath: "/my-cards",
+        routerPaths: ["/my-cards", "/card/:cardId"],
       },
       {
         activityKey: "create-card",

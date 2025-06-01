@@ -3,7 +3,7 @@ import { useMemoizedFn } from "ahooks";
 import {
   IKeyValueStorageData,
   keyValueStorageService,
-} from "../services/key-value-storage";
+} from "../services/key-value-storage.service";
 import { getOrCreateResource } from "@/shared/lib/resource/resource";
 import { useEffect } from "react";
 
@@ -49,7 +49,6 @@ export function useStorageResource<
 ) {
   const resource = createStorageResource(key, value, onChange);
   const { data, isLoading, isValidating, error } = resource.getState();
-  console.log("data", data, isLoading, isValidating, error);
 
   const update = useMemoizedFn(
     (newValue: GetStorageValueType<IKeyValueStorageData, K>) => {

@@ -47,7 +47,6 @@ export class CreateEditCardPlugin implements Plugin {
           required: ["title", "content"],
         },
         handler: async (args: { title: string; content: string }) => {
-          console.log("[tool][create-card] args", args)
           try {
             // 1. 发送预览事件
             this.emitPreview({

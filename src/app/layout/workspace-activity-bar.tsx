@@ -20,11 +20,11 @@ export function WorkspaceActivityBar() {
     onChange: setCollapsed,
   });
 
-  useConnectKeyValueStorage({
-    key: "activityBar.activeItemKey",
-    value: activeItemKey,
-    onChange: setActiveItemKey,
-  });
+  // useConnectKeyValueStorage({
+  //   key: "activityBar.activeItemKey",
+  //   value: activeItemKey,
+  //   onChange: setActiveItemKey,
+  // });
 
   const renderItem = (item: NavItem) => {
     return (

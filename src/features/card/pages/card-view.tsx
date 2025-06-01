@@ -1,57 +1,24 @@
-import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CardPreviewItem } from '@/features/card/components/card-preview-item';
-import { cardService } from '@/features/card/services/card';
-import { SmartCard } from '@/shared/types/smart-card';
+import { useCard } from '@/features/card/hooks/use-card';
 import { PageLayout } from '@/shared/components/layout/page/page-layout';
 import { Button } from '@/shared/components/ui/button';
+import { linkUtilService } from '@/core/services/link-util.service';
 
 export default function CardView() {
   const { cardId } = useParams<{ cardId: string }>();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [card, setCard] = useState<SmartCard | null>(null);
-
-  useEffect(() => {
-    const fetchCard = async () => {
-      if (!cardId) {
-        setError('卡片ID不存在');
-        setLoading(false);
-        return;
-      }
-      
-      try {
-        setLoading(true);
-        setError(null);
-        const cardData = await cardService.getCard(cardId);
-        
-        if (!cardData) {
-          setError('未找到卡片');
-          return;
-        }
-        
-        setCard(cardData);
-      } catch (err) {
-        console.error('加载卡片失败:', err);
-        setError('加载卡片失败，请稍后再试');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchCard();
-  }, [cardId]);
+  const { card, isLoading, error } = useCard(cardId);
 
   const handleBack = () => {
-    navigate('/my-cards');
+    navigate(linkUtilService.pathOfCards());
   };
 
   return (
     <PageLayout
       title="卡片详情"
-      error={error}
-      loading={loading}
+      error={error?.message}
+      loading={isLoading}
       className="p-6"
     >
       {card && (

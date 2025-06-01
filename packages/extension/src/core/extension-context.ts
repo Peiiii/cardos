@@ -59,7 +59,6 @@ export function createExtensionContext(
 
     // 释放所有资源
     dispose() {
-      console.log("[ExtensionContext] [dispose] dispose [before]");
       // 释放所有订阅
       while (subscriptions.length > 0) {
         const disposable = subscriptions.pop();
@@ -74,7 +73,6 @@ export function createExtensionContext(
 
       // 释放上下文其他资源
       disposables.dispose();
-      console.log("[ExtensionContext] [dispose] dispose [after]");
     },
 
     internalEvents: manager.internalEvents,

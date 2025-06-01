@@ -1,5 +1,5 @@
 import { GetStorageValueType, StoragePaths } from "@cardos/key-value-storage";
-import { IKeyValueStorageData } from "../services/key-value-storage";
+import { IKeyValueStorageData } from "../services/key-value-storage.service";
 import { useStorageResource } from "./storage-resource";
 
 /**

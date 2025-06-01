@@ -4,7 +4,6 @@ import { cardService } from "@/features/card/services/card";
 import { SmartCard } from "@/shared/types/smart-card";
 
 export function useCards(conversationId?: string) {
-  console.log("[useCards] conversationId", conversationId);
   return useCRUDResource<SmartCard>(
     cardResource,
     {
