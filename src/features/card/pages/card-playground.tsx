@@ -1,67 +1,22 @@
 import { useCards } from "@/features/card/hooks/use-cards";
 import { PageLayout } from "@/shared/components/layout/page/page-layout";
 import { useEffect } from "react";
-import { CardEventType } from "../types/communication";
-import { PostMessageCommunicationManager } from "../services/iframe-communication";
 import { 
   CardCommunicationProvider, 
   useCardCommunication, 
   useCardOperations,
+  useCardMessageHandlers,
+  CardRenderer,
   CardData 
-} from "../services/card-communication-provider";
-
-// 卡片渲染组件
-function CardRenderer({ card }: { card: CardData }) {
-  const { getIframeRef } = useCardCommunication();
-  const iframeRef = getIframeRef(card.id);
-
-  return (
-    <div className="border rounded-lg shadow-lg overflow-hidden">
-      <h3 className="p-3 bg-gray-100 dark:bg-gray-800 text-sm font-semibold border-b">
-        {card.title} (ID: {card.id})
-      </h3>
-      <iframe
-        ref={iframeRef}
-        srcDoc={card.htmlContent}
-        title={card.title}
-        sandbox="allow-scripts allow-same-origin"
-        className="w-full h-64 border-0"
-      />
-    </div>
-  );
-}
+} from "../services/card-communication-adapter";
 
 // 控制面板组件
 function CardControlPanel({ cards }: { cards: CardData[] }) {
-  const { getActiveCardCount, onMessage } = useCardCommunication();
+  const { getActiveCardCount } = useCardCommunication();
   const { highlightAllCards, alertCard } = useCardOperations();
-
-  // 监听卡片消息
-  useEffect(() => {
-    const unsubscribeDataUpdate = onMessage(CardEventType.DATA_UPDATE, (message) => {
-      console.log('Data update from card:', message);
-      // 可以在这里处理数据更新逻辑
-    });
-
-    const unsubscribeStateChange = onMessage(CardEventType.STATE_CHANGE, (message) => {
-      console.log('Card state changed:', message);
-    });
-
-    const unsubscribeUserAction = onMessage(CardEventType.USER_ACTION, (message) => {
-      console.log('User action:', message);
-    });
-
-    const unsubscribeError = onMessage(CardEventType.ERROR, (message) => {
-      console.error('Card error:', message);
-    });
-
-    return () => {
-      unsubscribeDataUpdate();
-      unsubscribeStateChange();
-      unsubscribeUserAction();
-      unsubscribeError();
-    };
-  }, [onMessage]);
+  
+  // 自动设置消息处理
+  useCardMessageHandlers();
 
   return (
     <div className="mb-4 p-4 border rounded-lg bg-muted">
@@ -94,7 +49,7 @@ function CardPlaygroundContent() {
   // 自动注册卡片
   useEffect(() => {
     if (cardsData) {
-      // SmartCard已经包含了CardData需要的所有字段
+      // SmartCard已经兼容CardData
       registerCards(cardsData as CardData[]);
     }
   }, [cardsData, registerCards]);
@@ -128,7 +83,7 @@ function CardPlaygroundContent() {
 
   return (
     <PageLayout
-      title="卡片演练场 - 跨卡片通信"
+      title="卡片演练场 - 通用多方通信"
       className="p-6 flex flex-col h-full"
     >
       <CardControlPanel cards={cards} />
@@ -143,15 +98,8 @@ function CardPlaygroundContent() {
 
 // 根组件 - 提供通信上下文
 export default function CardPlaygroundPage() {
-  const communicationManager = new PostMessageCommunicationManager();
-
   return (
-    <CardCommunicationProvider 
-      config={{ 
-        manager: communicationManager,
-        autoRegister: true 
-      }}
-    >
+    <CardCommunicationProvider>
       <CardPlaygroundContent />
     </CardCommunicationProvider>
   );
