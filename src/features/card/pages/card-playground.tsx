@@ -1,172 +1,159 @@
 import { useCards } from "@/features/card/hooks/use-cards";
 import { PageLayout } from "@/shared/components/layout/page/page-layout";
-import { SmartCard } from "@/shared/types/smart-card";
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  CardEventType,
-  CardToParentMessage,
-  MessageBuilder,
-  MessageBus,
-  ParentCommandType,
-  isCardToParentMessage,
-} from "../types/communication";
+import { useEffect } from "react";
+import { CardEventType } from "../types/communication";
+import { PostMessageCommunicationManager } from "../services/iframe-communication";
+import { 
+  CardCommunicationProvider, 
+  useCardCommunication, 
+  useCardOperations,
+  CardData 
+} from "../services/card-communication-provider";
 
-interface CardFrame extends SmartCard {
-  iframeRef: React.RefObject<HTMLIFrameElement | null>;
+// 卡片渲染组件
+function CardRenderer({ card }: { card: CardData }) {
+  const { getIframeRef } = useCardCommunication();
+  const iframeRef = getIframeRef(card.id);
+
+  return (
+    <div className="border rounded-lg shadow-lg overflow-hidden">
+      <h3 className="p-3 bg-gray-100 dark:bg-gray-800 text-sm font-semibold border-b">
+        {card.title} (ID: {card.id})
+      </h3>
+      <iframe
+        ref={iframeRef}
+        srcDoc={card.htmlContent}
+        title={card.title}
+        sandbox="allow-scripts allow-same-origin"
+        className="w-full h-64 border-0"
+      />
+    </div>
+  );
 }
 
-export default function CardPlaygroundPage() {
-  const {
-    data: cardsData,
-    isLoading,
-    error,
-  } = useCards(undefined, { reload: true });
-  const [activeCards, setActiveCards] = useState<CardFrame[]>([]);
-  const messageBus = useMemo(() => new MessageBus(), []);
+// 控制面板组件
+function CardControlPanel({ cards }: { cards: CardData[] }) {
+  const { getActiveCardCount, onMessage } = useCardCommunication();
+  const { highlightAllCards, alertCard } = useCardOperations();
 
-  // Initialize activeCards with iframe refs
+  // 监听卡片消息
   useEffect(() => {
-    if (cardsData) {
-      setActiveCards(
-        cardsData.map((card) => ({
-          ...card,
-          iframeRef: React.createRef<HTMLIFrameElement | null>(),
-        }))
-      );
-    }
-  }, [cardsData]);
-
-  // Initialize message handlers
-  useEffect(() => {
-    // 注册数据更新处理器
-    messageBus.registerHandler(CardEventType.DATA_UPDATE, (message: CardToParentMessage) => {
-      broadcastToCards(
-        MessageBuilder.createParentCommand(
-          ParentCommandType.RELAY_EVENT,
-          message.payload,
-          message.sourceCardId
-        )
-      );
+    const unsubscribeDataUpdate = onMessage(CardEventType.DATA_UPDATE, (message) => {
+      console.log('Data update from card:', message);
+      // 可以在这里处理数据更新逻辑
     });
 
-    // 注册状态变更处理器
-    messageBus.registerHandler(CardEventType.STATE_CHANGE, (message: CardToParentMessage) => {
+    const unsubscribeStateChange = onMessage(CardEventType.STATE_CHANGE, (message) => {
       console.log('Card state changed:', message);
     });
 
-    // 注册用户操作处理器
-    messageBus.registerHandler(CardEventType.USER_ACTION, (message: CardToParentMessage) => {
+    const unsubscribeUserAction = onMessage(CardEventType.USER_ACTION, (message) => {
       console.log('User action:', message);
     });
 
-    // 注册错误处理器
-    messageBus.registerHandler(CardEventType.ERROR, (message: CardToParentMessage) => {
+    const unsubscribeError = onMessage(CardEventType.ERROR, (message) => {
       console.error('Card error:', message);
     });
 
-    const handleMessage = (event: MessageEvent) => {
-      const messageData = event.data;
-      if (isCardToParentMessage(messageData)) {
-        messageBus.dispatch(messageData.eventType, messageData);
-      }
+    return () => {
+      unsubscribeDataUpdate();
+      unsubscribeStateChange();
+      unsubscribeUserAction();
+      unsubscribeError();
     };
+  }, [onMessage]);
 
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [messageBus]);
+  return (
+    <div className="mb-4 p-4 border rounded-lg bg-muted">
+      <h2 className="text-lg font-semibold mb-2">控制面板</h2>
+      <p className="text-sm text-muted-foreground mb-2">
+        从这里向所有卡片或特定卡片发送命令。当前活跃卡片数量: {getActiveCardCount()}
+      </p>
+      <button
+        onClick={() => highlightAllCards('yellow')}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2"
+      >
+        高亮所有卡片
+      </button>
+      <button
+        onClick={() => cards[0] && alertCard(cards[0].id, "你好，第一张卡片！")}
+        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        disabled={cards.length === 0}
+      >
+        向第一张卡片发送消息
+      </button>
+    </div>
+  );
+}
 
-  // Function to broadcast messages to all cards
-  const broadcastToCards = (message: ReturnType<typeof MessageBuilder.createParentCommand>) => {
-    activeCards.forEach((card) => {
-      card.iframeRef.current?.contentWindow?.postMessage(message, "*");
-    });
-  };
+// 主要的卡片展示组件
+function CardPlaygroundContent() {
+  const { data: cardsData, isLoading, error } = useCards(undefined, { reload: true });
+  const { registerCards } = useCardCommunication();
 
-  // Function to send a message to a specific card
-  const sendToCard = (cardId: string, message: ReturnType<typeof MessageBuilder.createParentCommand>) => {
-    const targetCard = activeCards.find((card) => card.id === cardId);
-    targetCard?.iframeRef.current?.contentWindow?.postMessage(message, "*");
-  };
+  // 自动注册卡片
+  useEffect(() => {
+    if (cardsData) {
+      // SmartCard已经包含了CardData需要的所有字段
+      registerCards(cardsData as CardData[]);
+    }
+  }, [cardsData, registerCards]);
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <PageLayout title="加载中..." loading={true}>
         <p>正在努力加载卡片...</p>
       </PageLayout>
     );
-  if (error)
+  }
+
+  if (error) {
     return (
       <PageLayout title="错误" error={error.message}>
         <p>加载卡片时发生错误。</p>
       </PageLayout>
     );
-  if (!cardsData || cardsData.length === 0)
+  }
+
+  if (!cardsData || cardsData.length === 0) {
     return (
       <PageLayout title="卡片演练场">
         <p>没有可用的卡片来开始演练。</p>
       </PageLayout>
     );
+  }
+
+  // SmartCard类型已经兼容CardData
+  const cards = cardsData as CardData[];
 
   return (
     <PageLayout
       title="卡片演练场 - 跨卡片通信"
       className="p-6 flex flex-col h-full"
     >
-      <div className="mb-4 p-4 border rounded-lg bg-muted">
-        <h2 className="text-lg font-semibold mb-2">控制面板</h2>
-        <p className="text-sm text-muted-foreground mb-2">
-          从这里向所有卡片或特定卡片发送命令。
-        </p>
-        <button
-          onClick={() =>
-            broadcastToCards(
-              MessageBuilder.createParentCommand(
-                ParentCommandType.HIGHLIGHT,
-                { color: "yellow" }
-              )
-            )
-          }
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2"
-        >
-          高亮所有卡片
-        </button>
-        <button
-          onClick={() =>
-            activeCards[0] &&
-            sendToCard(
-              activeCards[0].id,
-              MessageBuilder.createParentCommand(
-                ParentCommandType.ALERT,
-                { message: "你好，第一张卡片！" }
-              )
-            )
-          }
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          disabled={activeCards.length === 0}
-        >
-          向第一张卡片发送消息
-        </button>
-      </div>
+      <CardControlPanel cards={cards} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {activeCards.map((card) => (
-          <div
-            key={card.id}
-            className="border rounded-lg shadow-lg overflow-hidden"
-          >
-            <h3 className="p-3 bg-gray-100 dark:bg-gray-800 text-sm font-semibold border-b">
-              {card.title} (ID: {card.id})
-            </h3>
-            <iframe
-              ref={card.iframeRef}
-              srcDoc={card.htmlContent}
-              title={card.title}
-              sandbox="allow-scripts allow-same-origin"
-              className="w-full h-64 border-0"
-            />
-          </div>
+        {cards.map((card) => (
+          <CardRenderer key={card.id} card={card} />
         ))}
       </div>
     </PageLayout>
+  );
+}
+
+// 根组件 - 提供通信上下文
+export default function CardPlaygroundPage() {
+  const communicationManager = new PostMessageCommunicationManager();
+
+  return (
+    <CardCommunicationProvider 
+      config={{ 
+        manager: communicationManager,
+        autoRegister: true 
+      }}
+    >
+      <CardPlaygroundContent />
+    </CardCommunicationProvider>
   );
 }
  
