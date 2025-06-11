@@ -18,9 +18,9 @@ export interface NodeData {
 /**
  * 节点工厂返回值
  */
-export interface NodeInstance {
+export interface NodeInstance<TResource = unknown> {
   communicationNode: CommunicationNode;
-  resource: unknown;
+  resource: TResource;
 }
 
 /**
@@ -35,7 +35,7 @@ export interface CommunicationConfig {
 /**
  * 通信上下文值
  */
-export interface CommunicationContextValue {
+export interface CommunicationContextValue<TResource = unknown> {
   /**
    * 发送消息给特定节点
    */
@@ -49,7 +49,7 @@ export interface CommunicationContextValue {
   /**
    * 注册节点列表
    */
-  registerNodes: (nodes: NodeData[], nodeFactory: (nodeData: NodeData) => NodeInstance) => void;
+  registerNodes: (nodes: NodeData[], nodeFactory: (nodeData: NodeData) => NodeInstance<TResource>) => void;
   
   /**
    * 监听来自节点的消息
@@ -165,8 +165,8 @@ export function CommunicationProvider({ children, config }: CommunicationProvide
 /**
  * 使用通信的Hook - 提供通用API
  */
-export function useCommunication(): CommunicationContextValue {
-  const context = useContext(CommunicationContext);
+export function useCommunication<TResource = unknown>(): CommunicationContextValue<TResource> {
+  const context = useContext(CommunicationContext) as CommunicationContextValue<TResource>;
   if (!context) {
     throw new Error('useCommunication must be used within a CommunicationProvider');
   }

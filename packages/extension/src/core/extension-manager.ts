@@ -5,7 +5,7 @@ import {
   ExtensionManifest,
   IExtensionManager,
   ExtensionManagerEvents,
-  RxEvent
+  RxEvent,
 } from "../types";
 import { CommandRegistryImpl } from "./command-registry";
 import { createDisposableCollection } from "./disposable";
@@ -34,7 +34,10 @@ export class ExtensionManager implements IDisposable, IExtensionManager {
     onDidExtensionLoaded: new RxEvent<ExtensionDefinition>(),
     onDidExtensionActivated: new RxEvent<ExtensionDefinition>(),
     onDidExtensionDeactivated: new RxEvent<ExtensionDefinition>(),
-    onExtensionError: new RxEvent<{ extension: ExtensionDefinition; error: Error }>()
+    onExtensionError: new RxEvent<{
+      extension: ExtensionDefinition;
+      error: Error;
+    }>(),
   };
 
   /**
@@ -45,7 +48,7 @@ export class ExtensionManager implements IDisposable, IExtensionManager {
     this._disposables.add(this._serviceRegistry);
     this._disposables.add(this._commandRegistry);
     this._disposables.add(this._eventBus);
-    
+
     // 添加事件到释放列表
     this._disposables.add(this._internalEvents.onDidExtensionLoaded);
     this._disposables.add(this._internalEvents.onDidExtensionActivated);
@@ -106,7 +109,9 @@ export class ExtensionManager implements IDisposable, IExtensionManager {
     // 以下是示例实现，实际需要根据具体场景调整
     try {
       // 动态导入扩展模块
-      const extensionModule = await import(/* webpackIgnore: true */ path);
+      const extensionModule = await import(
+        /* webpackIgnore: true */ /* @vite-ignore */ path
+      );
       if (!extensionModule.default) {
         throw new Error(`扩展模块 ${path} 没有默认导出`);
       }
@@ -187,7 +192,10 @@ export class ExtensionManager implements IDisposable, IExtensionManager {
       // 处理激活错误
       const typedError =
         error instanceof Error ? error : new Error(String(error));
-      this._internalEvents.onExtensionError.fire({ extension, error: typedError });
+      this._internalEvents.onExtensionError.fire({
+        extension,
+        error: typedError,
+      });
       throw typedError;
     }
   }
@@ -222,7 +230,10 @@ export class ExtensionManager implements IDisposable, IExtensionManager {
       // 处理停用错误
       const typedError =
         error instanceof Error ? error : new Error(String(error));
-      this._internalEvents.onExtensionError.fire({ extension, error: typedError });
+      this._internalEvents.onExtensionError.fire({
+        extension,
+        error: typedError,
+      });
       throw typedError;
     }
   }

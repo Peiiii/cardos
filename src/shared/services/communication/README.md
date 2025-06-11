@@ -51,9 +51,10 @@ import {
 
 // 第一步：提供通信上下文
 function App() {
+    const manager = useMemo(() => new PostMessageCommunicationManager(), []);
   return (
     <CommunicationProvider config={{ 
-      manager: new PostMessageCommunicationManager() 
+      manager 
     }}>
       <YourComponents />
     </CommunicationProvider>
@@ -120,9 +121,10 @@ function createMyNode(nodeData: MyNodeData): NodeInstance {
 ```typescript
 // 卡片特定的适配器
 export function CardCommunicationProvider({ children }) {
+  const manager = useMemo(() => new PostMessageCommunicationManager(), []);
   return (
     <CommunicationProvider config={{ 
-      manager: new PostMessageCommunicationManager() 
+      manager 
     }}>
       {children}
     </CommunicationProvider>
@@ -144,9 +146,10 @@ export function useCardCommunication() {
 ```typescript
 // 微前端特定的适配器
 export function MicroFrontendCommunicationProvider({ children }) {
+  const manager = useMemo(() => new CustomEventCommunicationManager(), []);
   return (
     <CommunicationProvider config={{ 
-      manager: new CustomEventCommunicationManager() 
+      manager 
     }}>
       {children}
     </CommunicationProvider>
@@ -168,9 +171,10 @@ export function useMicroAppCommunication() {
 ```typescript
 // WebWorker特定的适配器
 export function WorkerCommunicationProvider({ children }) {
+  const manager = useMemo(() => new WorkerCommunicationManager(), []);
   return (
     <CommunicationProvider config={{ 
-      manager: new WorkerCommunicationManager() 
+      manager 
     }}>
       {children}
     </CommunicationProvider>
