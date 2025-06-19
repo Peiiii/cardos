@@ -2,13 +2,27 @@
   "name": "@cardos/extension",
   "version": "0.1.7",
   "private": false,
-  "description": "CardOS Extension System",
+  "description": "CardOS Extension System - A powerful plugin architecture for building extensible applications",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "files": [
-    "src"
+    "src",
+    "README.md",
+    "README.zh-CN.md",
+    "API.md",
+    "GUIDE.md"
   ],
+  "keywords": [
+    "extension",
+    "plugin",
+    "architecture",
+    "typescript",
+    "cardos",
+    "modular"
+  ],
+  "author": "CardOS Team",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
