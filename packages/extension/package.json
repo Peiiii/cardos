@@ -1,6 +1,6 @@
 {
   "name": "@cardos/extension",
-  "version": "0.1.9",
+  "version": "0.2.0-beta.1",
   "private": false,
   "description": "CardOS Extension System - A powerful plugin architecture for building extensible applications",
   "type": "module",
